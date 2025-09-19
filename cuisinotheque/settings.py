@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["cuisinotheque.local", "192.168.1.2", "rpi4", "rpi4.local", "localhost"]
 
 
 # Application definition
