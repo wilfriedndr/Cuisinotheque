@@ -3,14 +3,13 @@
 > **La bibliothèque numérique de vos recettes**  
 
   
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=Python&logoColor=white)  
-![Django](https://img.shields.io/badge/Django-4.x-092E20?logo=Django&logoColor=white)  
+![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)  
+![Django](https://img.shields.io/badge/Django-5.0-092E20?logo=django&logoColor=white)  
 ![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?logo=docker&logoColor=white)  
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?logo=kubernetes&logoColor=white)  
 ![GSAP](https://img.shields.io/badge/GSAP-Animations-88CE02?logo=greensock&logoColor=white)  
 ![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-4B-C51A4A?logo=raspberrypi&logoColor=white)  
-![Status](https://img.shields.io/badge/Status-En%20développement-orange)  
- 
+![Status](https://img.shields.io/badge/Status-En%20développement-orange)   
 
 
 ---
