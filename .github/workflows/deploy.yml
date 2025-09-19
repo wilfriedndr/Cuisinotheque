@@ -1,0 +1,16 @@
+deploy:
+  needs: build
+  runs-on: [self-hosted, rpi4]
+  steps:
+    - name: Checkout
+    # Sur runner self-hosted, actions/checkout v4
+      uses: actions/checkout@v4
+
+    - name: Apply manifests
+      env:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+        IMAGE: ghcr.io/${{ github.repository_owner }}/cuisinotheque:${{ github.sha }}
+      run: |
+        kubectl apply -f k8s/
+        kubectl -n cuisinotheque set image deployment/cuisinotheque-web web=$IMAGE
+        kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=180s
