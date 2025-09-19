@@ -1,0 +1,23 @@
+# Environnement virtuel
+env/
+venv/
+
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*.so
+
+# Config & secrets
+.env
+
+# Base de données locale
+*.sqlite3
+
+# Fichiers de logs
+*.log
+
+# VS Code
+.vscode/
+
+# Docker
+*.pid
