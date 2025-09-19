@@ -81,3 +81,12 @@ Ce projet est aussi un **terrain d’expérimentation** pour :
 ---
 
 👉 *Cuisinothèque n’est pas seulement une application de gestion de recettes, c’est un projet qui combine apprentissage, design et plaisir culinaire.*  
+
+---
+
+## 📝 Licence
+
+Ce projet est sous licence **Creative Commons Attribution - Non Commercial 4.0 International**.  
+Vous êtes libres de l'utiliser, de le modifier et de le partager **à condition de ne pas en faire un usage commercial** et de créditer l’auteur original.
+
+📄 [Lire la licence complète](https://creativecommons.org/licenses/by-nc/4.0/)
