@@ -61,7 +61,7 @@ Fini les carnets éparpillés et les captures d’écran perdues : créez votre 
 - **CI/CD** : GitHub + GitHub Actions  
 - **Conteneurisation** : Docker  
 - **Orchestration** : Kubernetes  
-- **Hébergement** : Raspberry Pi 4 (`192.168.1.2`, DNS local `rpi4`)  
+- **Hébergement** : Raspberry Pi 4  
 
 ---
 
