@@ -86,7 +86,7 @@ Ce projet est aussi un **terrain d’expérimentation** pour :
 
 ## 📝 Licence
 
-Ce projet est sous licence **Creative Commons Attribution - Non Commercial 4.0 International**.  
-Vous êtes libres de l'utiliser, de le modifier et de le partager **à condition de ne pas en faire un usage commercial** et de créditer l’auteur original.
+Ce projet est distribué sous licence **Creative Commons Attribution - Pas d’utilisation commerciale 4.0 International**.
 
-📄 [Lire la licence complète](https://creativecommons.org/licenses/by-nc/4.0/)
+📄 Voir le fichier [LICENSE.md](LICENSE.md)  
+🔗 [Lire la licence complète](https://creativecommons.org/licenses/by-nc/4.0/)
