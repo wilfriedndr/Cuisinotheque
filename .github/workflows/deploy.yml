@@ -25,7 +25,10 @@ jobs:
           KUBECONFIG: /etc/rancher/k3s/k3s.yaml
           IMAGE: ghcr.io/${{ github.repository_owner }}/cuisinotheque:${{ github.sha }}
         run: |
-          kubectl apply -f cuisinotheque/k8s/
+          pwd
+          ls -R
+          kubectl apply -f k8s/
           kubectl -n cuisinotheque set image deployment/cuisinotheque-web web=$IMAGE || true
           kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=180s
+
 
