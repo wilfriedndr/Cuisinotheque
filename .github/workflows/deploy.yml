@@ -25,24 +25,28 @@ jobs:
           KUBECONFIG: /etc/rancher/k3s/k3s.yaml
           IMAGE: ghcr.io/${{ github.repository_owner }}/cuisinotheque:${{ github.sha }}
         run: |
-          # Namespace (doit exister avant tout le reste)
+          # Namespace
           kubectl apply -f k8s/namespace.yaml
-
+          
           # Config & secrets
           kubectl apply -f k8s/config.yaml
           kubectl apply -f k8s/postgres-secret.yaml
-
-          # PostgreSQL (volume -> déploiement -> service)
+          
+          # PostgreSQL
           kubectl apply -f k8s/postgres-pvc.yaml
           kubectl apply -f k8s/postgres-deployment.yaml
           kubectl apply -f k8s/postgres-service.yaml
-
-          # Django app (deployment -> service -> ingress)
+          
+          # Django
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/ingress.yaml
-
+          
           # Met à jour l’image de l’app Django
           kubectl -n cuisinotheque set image deployment/cuisinotheque-web web=$IMAGE || true
-
-          # Vérifie que le déploiement est bien terminé
+          
+          # ⚡ Force un redeploy si jamais un ancien pod bloque
+          kubectl -n cuisinotheque rollout restart deployment/cuisinotheque-web
+          
+          # Vérifie que le nouveau déploiement est bien terminé
           kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=180s
+
