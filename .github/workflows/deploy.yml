@@ -10,8 +10,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Hello test build
-        run: echo "Build job OK"
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/cuisinotheque
+          docker build -t $IMAGE:latest -t $IMAGE:${{ github.sha }} .
+          docker push $IMAGE:latest
+          docker push $IMAGE:${{ github.sha }}
 
   deploy:
     needs: build
@@ -49,4 +57,3 @@ jobs:
           
           # Vérifie que le nouveau déploiement est bien terminé
           kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=180s
-
