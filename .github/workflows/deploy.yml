@@ -28,10 +28,6 @@ jobs:
           kubectl apply -f k8s/namespace.yaml
           kubectl apply -f k8s/config.yaml
           kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
           kubectl apply -f k8s/ingress.yaml
           kubectl -n cuisinotheque set image deployment/cuisinotheque-web web=$IMAGE || true
           kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=180s
-
-
-
