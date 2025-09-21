@@ -4,7 +4,7 @@
 
   
 ![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)  
-![Django](https://img.shields.io/badge/Django-5.0-092E20?logo=django&logoColor=white)  
+![Django](https://img.shields.io/badge/Django-5.2.6-092E20?logo=django&logoColor=white)  
 ![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?logo=docker&logoColor=white)  
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?logo=kubernetes&logoColor=white)  
 ![GSAP](https://img.shields.io/badge/GSAP-Animations-88CE02?logo=greensock&logoColor=white)  
