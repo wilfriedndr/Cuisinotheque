@@ -17,7 +17,11 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Collecter les fichiers statiques
-RUN python manage.py collectstatic --noinput
+# RUN python manage.py collectstatic --noinput
 
-# Définir la commande par défaut (Gunicorn pour la prod)
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["gunicorn", "cuisinotheque.wsgi:application", "--bind", "0.0.0.0:8000"]
+
