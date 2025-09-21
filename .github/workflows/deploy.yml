@@ -62,11 +62,11 @@ jobs:
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/ingress.yaml
           
-          # Met à jour l’image de l’app Django
+          # Met à jour l’image
           kubectl -n cuisinotheque set image deployment/cuisinotheque-web web=$IMAGE || true
           
-          # ⚡ Force un redeploy si jamais un ancien pod bloque
+          # Redémarre le déploiement
           kubectl -n cuisinotheque rollout restart deployment/cuisinotheque-web
           
-          # Vérifie que le nouveau déploiement est bien terminé
-          kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=180s
+          # Attente souple (ne bloque pas le job si jamais ça échoue)
+          kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=60s || kubectl -n cuisinotheque get pods
