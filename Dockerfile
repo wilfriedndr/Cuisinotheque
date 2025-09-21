@@ -1,5 +1,5 @@
 # Utilise une image officielle de Python
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
@@ -16,8 +16,8 @@ COPY . .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Collecter les fichiers statiques (à activer si j'utilise collectstatic plus tard)
-# RUN python manage.py collectstatic --noinput
+# Collecter les fichiers statiques
+RUN python manage.py collectstatic --noinput
 
 # Définir la commande par défaut (Gunicorn pour la prod)
 CMD ["gunicorn", "cuisinotheque.wsgi:application", "--bind", "0.0.0.0:8000"]
