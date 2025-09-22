@@ -29,9 +29,9 @@ jobs:
         run: |
           IMAGE=ghcr.io/${{ github.repository_owner }}/cuisinotheque
           docker buildx build \
+            --no-cache \
             --platform linux/arm64 \
             -t $IMAGE:latest \
-            -t $IMAGE:${{ github.sha }} \
             --push .
 
   deploy:
@@ -62,11 +62,11 @@ jobs:
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/ingress.yaml
           
-          # Met à jour l’image
-          kubectl -n cuisinotheque set image deployment/cuisinotheque-web web=$IMAGE || true
+          # Met à jour l’image (sans || true)
+          kubectl -n cuisinotheque set image deployment/cuisinotheque-web web=$IMAGE
           
           # Redémarre le déploiement
           kubectl -n cuisinotheque rollout restart deployment/cuisinotheque-web
           
-          # Attente souple (ne bloque pas le job si jamais ça échoue)
-          kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=60s || kubectl -n cuisinotheque get pods
+          # Attente plus longue (3 minutes)
+          kubectl -n cuisinotheque rollout status deployment/cuisinotheque-web --timeout=180s
