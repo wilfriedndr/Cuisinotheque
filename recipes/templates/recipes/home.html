@@ -1,1 +1,7 @@
-home html
+{% extends "recipes/base.html" %}
+
+{% block content %}
+<h1>Bienvenue sur Cuisinothèque</h1>
+<p>Votre hub de recettes locales et personnalisées.</p>
+<a href="{% url 'recipe_list' %}">Découvrir les recettes</a>
+{% endblock %}

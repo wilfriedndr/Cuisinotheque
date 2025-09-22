@@ -1,1 +1,9 @@
-recipe form html
+{% extends "recipes/base.html" %}
+
+{% block content %}
+<h1>Ajouter / Modifier une recette</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <button type="submit">Enregistrer</button>
+</form>
+{% endblock %}
