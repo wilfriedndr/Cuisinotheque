@@ -1,35 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Cuisinothèque</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'recipes/css/style.css' %}">
-</head>
-<body>
+    <link rel="stylesheet" href="{% static 'recipes/css/style.css' %}" />
+    {% load static %}
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'recipes/img/favicon.ico' %}"
+    />
+  </head>
+  <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Accueil</a></li>
-                <li><a href="{% url 'recipe_list' %}">Recettes</a></li>
-                <li><a href="{% url 'recipe_create' %}">Ajouter</a></li>
-                <li><a href="{% url 'dashboard' %}">Tableau de bord</a></li>
-            </ul>
-        </nav>
+      <nav>
+        <ul>
+          <li><a href="{% url 'home' %}">Accueil</a></li>
+          <li><a href="{% url 'recipe_list' %}">Recettes</a></li>
+          <li><a href="{% url 'recipe_create' %}">Ajouter</a></li>
+          <li><a href="{% url 'dashboard' %}">Tableau de bord</a></li>
+        </ul>
+      </nav>
     </header>
 
     <main>
-        {% block content %}
-        <!-- contenu des pages -->
-        {% endblock %}
+      {% block content %}
+      <!-- contenu des pages -->
+      {% endblock %}
     </main>
 
     <footer>
-        <p>© 2025 Cuisinothèque</p>
+      <p>© 2025 Cuisinothèque</p>
     </footer>
 
     <script src="{% static 'recipes/js/animations.js' %}"></script>
-</body>
+  </body>
 </html>
