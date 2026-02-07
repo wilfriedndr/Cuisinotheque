@@ -54,7 +54,8 @@
     themeIcon.classList.add(theme === "dark" ? "fa-sun" : "fa-moon");
 
     // sécurité : garder l’icône bien "droite"
-    if (hasGSAP()) gsap().set(themeIcon, { rotate: 0, transformOrigin: "50% 50%" });
+    if (hasGSAP())
+      gsap().set(themeIcon, { rotate: 0, transformOrigin: "50% 50%" });
     else themeIcon.style.transform = "rotate(0deg)";
   }
 
@@ -117,6 +118,116 @@
   if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 
   // ----------------------------
+  // Mobile nav overlay (GSAP)
+  // ----------------------------
+  const navToggle = document.getElementById("navToggle");
+  const overlay = document.getElementById("mobileNavOverlay");
+  const panel = document.getElementById("mobileNavPanel");
+  const backdrop = document.getElementById("mobileNavBackdrop");
+  const closeBtn = document.getElementById("mobileNavClose");
+
+  let navTl = null;
+
+  function setOpen(isOpen) {
+    if (!overlay || !navToggle) return;
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+    overlay.hidden = !isOpen;
+    overlay.setAttribute("aria-hidden", String(!isOpen));
+    document.body.classList.toggle("no-scroll", isOpen);
+  }
+
+  function openNav() {
+    if (!overlay || !panel) return;
+    setOpen(true);
+
+    // réutilise les helpers
+    if (reduceMotion() || !hasGSAP()) return;
+
+    if (!navTl) {
+      navTl = gsap().timeline({ paused: true });
+      navTl
+        .fromTo(
+          backdrop,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.18, ease: "power1.out" },
+          0
+        )
+        .fromTo(
+          panel,
+          { x: 40, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.28, ease: "power2.out" },
+          0
+        );
+    }
+
+    navTl.play(0);
+    if (closeBtn) setTimeout(() => closeBtn.focus(), 0);
+
+    // Stagger des liens
+    const links = panel.querySelectorAll(".mobile-nav-links .nav-link");
+    gsap().killTweensOf(links);
+    gsap().set(links, { clearProps: "opacity,transform" });
+    gsap().fromTo(
+      links,
+      { y: 8, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.22, stagger: 0.05, ease: "power2.out" }
+    );
+  }
+
+  function closeNav() {
+    if (!overlay || !panel) return;
+
+    const finish = () => setOpen(false);
+
+    // réutilise les helpers
+    if (reduceMotion() || !hasGSAP() || !navTl) {
+      finish();
+      return;
+    }
+
+    // reset des liens avant la fermeture pour repartir clean
+    const links = panel.querySelectorAll(".mobile-nav-links .nav-link");
+    gsap().killTweensOf(links);
+    gsap().set(links, { clearProps: "opacity,transform" });
+
+    navTl.eventCallback("onReverseComplete", finish);
+    navTl.reverse();
+  }
+
+  if (navToggle && overlay && panel && backdrop && closeBtn) {
+    setOpen(false);
+
+    navToggle.addEventListener("click", () => {
+      const isOpen = navToggle.getAttribute("aria-expanded") === "true";
+      isOpen ? closeNav() : openNav();
+    });
+
+    backdrop.addEventListener("click", closeNav);
+    closeBtn.addEventListener("click", closeNav);
+
+    // ferme au clic sur un lien
+    overlay.addEventListener("click", (e) => {
+      if (e.target && e.target.tagName === "A") closeNav();
+    });
+
+    // ESC pour fermer
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "Escape" &&
+        navToggle.getAttribute("aria-expanded") === "true"
+      ) {
+        closeNav();
+      }
+    });
+
+    // si on repasse en desktop, on ferme le menu
+    const mq = window.matchMedia("(min-width: 881px)");
+    mq.addEventListener("change", (e) => {
+      if (e.matches) closeNav();
+    });
+  }
+
+  // ----------------------------
   // GSAP: entrance animations + breathe
   // ----------------------------
   if (reduceMotion() || !hasGSAP()) return;
@@ -127,7 +238,7 @@
     title: qAnim("title"),
     subtitle: qAnim("subtitle"),
     cta: qAnim("cta"),
-    metrics: qAnim("metrics"), 
+    metrics: qAnim("metrics"),
 
     logoCard: qAnim("logo-card"),
     caption: qAnim("caption"),
@@ -152,7 +263,13 @@
   tl.to(t.heroLeft ? [t.heroLeft] : [], { y: 0, duration: 0.50 }, 0)
     .to(
       introLeft,
-      { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.09, immediateRender: false },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.55,
+        stagger: 0.09,
+        immediateRender: false,
+      },
       0.05
     )
     .to(t.heroRight ? [t.heroRight] : [], { y: 0, autoAlpha: 1, duration: 0.55 }, 0.08)
