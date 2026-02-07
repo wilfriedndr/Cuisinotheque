@@ -174,13 +174,9 @@ a {
   background: var(--surface);
   color: var(--text);
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 9px 12px;
   cursor: pointer;
   transition: transform .15s ease;
-}
-
-.icon-btn:hover {
-  transform: translateY(-1px);
 }
 
 .theme-toggle .theme-icon {
@@ -194,13 +190,11 @@ a {
    Main / Footer
    ------------------------- */
 .site-main {
-  /* ✅ prend la place restante => plus de calc(100vh - xxx) */
   flex: 1 0 auto;
 }
 
 .site-footer {
   margin-top: auto;
-  /* colle le footer en bas si page courte */
   border-top: 1px solid var(--border);
   padding: 18px 0;
   color: var(--muted);
