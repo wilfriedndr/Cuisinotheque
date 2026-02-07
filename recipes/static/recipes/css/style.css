@@ -1,33 +1,453 @@
+/* -------------------------
+   Valeurs par défaut)
+   ------------------------- */
+:root {
+  --container: 1100px;
+  --radius: 16px;
+
+  /* Mode clair */
+  --bg: #F3EFE8;
+  --surface: #FFFFFF;
+  --surface-2: #FAF7F2;
+  --text: #2E2E2E;
+  --muted: rgba(51, 51, 51, 0.72);
+  --border: #D8D8D8;
+  --logo-blur-color: rgba(124, 161, 204, 0.30);
+
+  /* Couleurs brand */
+  --primary: #8FBEA0;
+  --secondary: #6F97C6;
+  --honey: #E9AB3A;
+  --vanilla: #F7D590;
+
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.10);
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  --focus: rgba(124, 161, 204, 0.55);
+}
+
+html.theme-dark {
+  color-scheme: dark;
+}
+
+html.theme-light {
+  color-scheme: light;
+}
+
+/* -------------------------
+   Mode sombre
+   ------------------------- */
+.theme-dark {
+  --bg: #161616;
+  --surface: #212121;
+  --surface-2: #1C1C1C;
+
+  --text: #E6E6E6;
+  --muted: rgba(230, 230, 230, 0.70);
+  --border: rgba(230, 230, 230, 0.10);
+
+  --primary: #7FB28F;
+  --secondary: #86A6CF;
+  --honey: #D9B86A;
+  --vanilla: #FFDFA3;
+
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.18);
+
+  --focus: rgba(134, 166, 207, 0.45);
+  --logo-blur-color: rgba(111, 151, 198, 0.16);
+}
+
+/* Auto-mode si aucun choix stocké (optionnel) */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    color-scheme: dark;
+  }
+}
+
+/* -------------------------
+   Base
+   ------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fafafa;
+  height: 100%;
 }
 
-header {
-    background: #333;
-    padding: 1rem;
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-header nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-header nav ul li a {
-    color: white;
-    text-decoration: none;
+.container {
+  width: min(var(--container), calc(100% - 32px));
+  margin-inline: auto;
 }
 
-main {
-    padding: 2rem;
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 10px;
 }
 
-footer {
-    text-align: center;
-    padding: 1rem;
-    background: #f0f0f0;
-    margin-top: 2rem;
+/* -------------------------
+   Header / Nav
+   ------------------------- */
+.site-header {
+  min-height: 72px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.brand-name {
+  font-size: 16px;
+}
+
+.nav {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  padding: 8px 10px;
+  border-radius: 12px;
+  color: var(--muted);
+  border: 1px solid transparent;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  border-color: color-mix(in srgb, var(--border) 60%, transparent);
+  outline: none;
+}
+
+/* Bouton icône */
+.icon-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+
+.icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+.theme-toggle .theme-icon {
+  font-size: 16px;
+  line-height: 1;
+  display: inline-block;
+  transform-origin: center;
+}
+
+/* -------------------------
+   Main / Footer
+   ------------------------- */
+.site-main {
+  /* ✅ prend la place restante => plus de calc(100vh - xxx) */
+  flex: 1 0 auto;
+}
+
+.site-footer {
+  margin-top: auto;
+  /* colle le footer en bas si page courte */
+  border-top: 1px solid var(--border);
+  padding: 18px 0;
+  color: var(--muted);
+}
+
+/* -------------------------
+   Hero
+   ------------------------- */
+.hero {
+  padding: 56px 0 24px;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.hero-title {
+  margin: 14px 0 10px;
+  font-size: clamp(34px, 4vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  margin: 0 0 18px;
+  font-size: clamp(16px, 1.6vw, 18px);
+  color: var(--muted);
+  max-width: 58ch;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+/* Visual */
+.hero-visual {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.logo-card {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 26px;
+
+  background: var(--logo-blur-color);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  border: 1px solid var(--border);
+
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.logo-hero {
+  width: 120px;
+  height: auto;
+  border-radius: 20px;
+  z-index: 2;
+  position: relative;
+}
+
+.logo-card::before {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  border-radius: inherit;
+  background: radial-gradient(circle at 60% 45%,
+      var(--logo-blur-color) 0%,
+      rgba(0, 0, 0, 0) 72%);
+
+  filter: blur(22px);
+  opacity: 1;
+  transform: scale(1.08);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.theme-dark .logo-card::before {
+  opacity: 0.65;
+}
+
+.visual-caption {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
+}
+
+.hero-metrics {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0 14px;
+}
+
+.pill {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.features {
+  padding: 26px 0 40px;
+}
+
+.section-title {
+  font-size: clamp(22px, 2.4vw, 30px);
+  margin: 0 0 16px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.card h3 {
+  margin: 0 0 8px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-weight: 800;
+  transition: transform .12s ease, filter .12s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, var(--secondary)));
+  color: #1E1E1E;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* =========================================
+   Theme transition (anti "flash")
+   ========================================= */
+html.theme-switching body,
+html.theme-switching .site-header,
+html.theme-switching .site-footer,
+html.theme-switching .nav-link,
+html.theme-switching .icon-btn,
+html.theme-switching .card,
+html.theme-switching .logo-card,
+html.theme-switching .pill,
+html.theme-switching .hero-subtitle,
+html.theme-switching .visual-caption {
+  transition:
+    background-color 320ms ease,
+    color 320ms ease,
+    border-color 320ms ease,
+    filter 320ms ease,
+    opacity 320ms ease;
+}
+
+/* petits ajustements visuels du logo selon le thème */
+.theme-dark .logo-hero,
+.theme-dark .brand-mark {
+  filter: brightness(1.05) contrast(1.02);
+}
+
+.theme-light .logo-hero,
+.theme-light .brand-mark {
+  filter: none;
+}
+
+/* accessibilité : si motion reduce, on coupe les transitions */
+@media (prefers-reduced-motion: reduce) {
+
+  html.theme-switching body,
+  html.theme-switching .site-header,
+  html.theme-switching .site-footer,
+  html.theme-switching .nav-link,
+  html.theme-switching .icon-btn,
+  html.theme-switching .card,
+  html.theme-switching .logo-card,
+  html.theme-switching .pill,
+  html.theme-switching .hero-subtitle,
+  html.theme-switching .visual-caption {
+    transition: none !important;
+  }
+}
+
+/* -------------------------
+   Responsive
+   ------------------------- */
+@media (max-width: 880px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual {
+    order: -1;
+    min-height: 260px;
+  }
+
+  .logo-hero {
+    width: 120px;
+    height: 120px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    display: none;
+    /* menu burger plus tard */
+  }
 }

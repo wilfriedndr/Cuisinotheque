@@ -1,7 +1,70 @@
-{% extends "recipes/base.html" %}
+{% extends "recipes/base.html" %} {% load static %} {% block title %}Accueil —
+Cuisinothèque{% endblock %} {% block content %}
 
-{% block content %}
-<h1>Bienvenue sur Cuisinothèque</h1>
-<p>Votre hub de recettes locales et personnalisées.</p>
-<a href="{% url 'recipe_list' %}">Découvrir les recettes</a>
+<section class="hero" data-section="hero" aria-labelledby="hero-title">
+  <div class="container hero-inner">
+    <!-- Colonne gauche (texte) -->
+    <div data-anim="hero-left">
+      <h1 class="hero-title" id="hero-title" data-anim="title">
+        Bienvenue dans la Cuisinothèque
+      </h1>
+
+      <p class="hero-subtitle" data-anim="subtitle">
+        Un carnet simple pour garder les recettes : ingrédients, étapes, et
+        quelques notes pour ne rien oublier.
+      </p>
+
+      <div class="hero-cta" data-anim="cta">
+        <a class="btn btn-primary" href="{% url 'recipe_list' %}">Parcourir les recettes</a>
+        <a class="btn btn-ghost" href="{% url 'recipe_create' %}">Ajouter une recette</a>
+      </div>
+
+      <div class="hero-metrics" data-anim="metrics" role="list" aria-label="Raccourcis">
+        <div class="pill" role="listitem">📒 Recettes + notes</div>
+        <div class="pill" role="listitem">🧾 Ingrédients & étapes</div>
+        <div class="pill" role="listitem">🧁 Sections (génoise, crème…)</div>
+      </div>
+    </div>
+
+    <!-- Colonne droite (visuel) -->
+    <div class="hero-visual" data-anim="hero-right" aria-hidden="true">
+      <div class="logo-card" data-anim="logo-card">
+        <img class="logo-hero" src="{% static 'recipes/img/cuisinotheque.png' %}"/>
+      </div>
+      <p class="visual-caption" data-anim="caption">Recettes du quotidien</p>
+    </div>
+  </div>
+</section>
+
+<section class="features" data-section="features" aria-labelledby="features-title">
+  <div class="container">
+    <h2 class="section-title" id="features-title" data-anim="features-title">
+      Au quotidien
+    </h2>
+
+    <div class="features-grid">
+      <article class="card" data-anim="feature-card">
+        <h3>Consulter</h3>
+        <p>Parcourir les recettes et ouvrir le détail quand j’en ai besoin.</p>
+      </article>
+
+      <article class="card" data-anim="feature-card">
+        <h3>Ajouter</h3>
+        <p>
+          Enregistrer une nouvelle recette quand j’en découvre une (ou quand je
+          la modifie).
+        </p>
+      </article>
+
+      <article class="card" data-anim="feature-card">
+        <h3>Organiser</h3>
+        <p>
+          Garder une structure claire, surtout pour les recettes en plusieurs
+          parties.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

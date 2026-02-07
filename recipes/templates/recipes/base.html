@@ -1,41 +1,73 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>Cuisinothèque</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Cuisinothèque{% endblock %}</title>
 
-    {% load static %}
+    <link rel="icon"type="image/x-icon" href="{% static 'recipes/img/favicon.ico' %}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("theme");
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme =
+            saved === "dark" || saved === "light"
+              ? saved
+              : prefersDark
+                ? "dark"
+                : "light";
+
+          var root = document.documentElement;
+          root.classList.remove("theme-dark", "theme-light");
+          root.classList.add(theme === "dark" ? "theme-dark" : "theme-light");
+          root.setAttribute("data-theme", theme);
+        } catch (e) {}
+      })();
+    </script>
+
     <link rel="stylesheet" href="{% static 'recipes/css/style.css' %}" />
-    {% load static %}
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{% static 'recipes/img/favicon.ico' %}"
-    />
   </head>
+
   <body>
-    <header>
-      <nav>
-        <ul>
-          <li><a href="{% url 'home' %}">Accueil</a></li>
-          <li><a href="{% url 'recipe_list' %}">Recettes</a></li>
-          <li><a href="{% url 'recipe_create' %}">Ajouter</a></li>
-          <li><a href="{% url 'dashboard' %}">Tableau de bord</a></li>
-        </ul>
-      </nav>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="{% url 'home' %}" aria-label="Retour à l'accueil">
+          <img class="brand-mark" src="{% static 'recipes/img/cuisinotheque.png' %}"/>
+          <span class="brand-name">Cuisinothèque</span>
+        </a>
+
+        <nav class="nav" aria-label="Navigation principale">
+          <a class="nav-link" href="{% url 'home' %}">Accueil</a>
+          <a class="nav-link" href="{% url 'recipe_list' %}">Recettes</a>
+          <a class="nav-link" href="{% url 'recipe_create' %}">Ajouter</a>
+          <a class="nav-link" href="{% url 'dashboard' %}">Tableau de bord</a>
+        </nav>
+        
+        <button class="icon-btn theme-toggle" type="button" id="themeToggle">
+            <i class="fa-solid fa-moon theme-icon" aria-hidden="true"></i>
+        </button>
+      </div>
     </header>
 
-    <main>
-      {% block content %}
-      <!-- contenu des pages -->
-      {% endblock %}
+    <main id="main" class="site-main">
+      {% block content %}{% endblock %}
     </main>
 
-    <footer>
-      <p>© 2025 Cuisinothèque</p>
-    </footer>
+    {% comment %} <footer class="site-footer js-footer">
+      <div class="container">
+        <small>© 2025 Cuisinothèque</small>
+      </div>
+    </footer> {% endcomment %}
 
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+    <!-- JS -->
     <script src="{% static 'recipes/js/animations.js' %}"></script>
   </body>
 </html>
