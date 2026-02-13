@@ -1,0 +1,126 @@
+.recipe-form-page {
+    padding: 28px 0 56px;
+}
+
+.recipe-form-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.recipe-form-title {
+    margin: 0;
+    font-size: clamp(26px, 2.2vw, 34px);
+    line-height: 1.1;
+}
+
+.recipe-form-subtitle {
+    margin: 10px 0 0;
+    color: var(--muted);
+    max-width: 70ch;
+}
+
+.recipe-form {
+    display: grid;
+    gap: 16px;
+}
+
+.rf-card {
+    padding: 18px;
+}
+
+.rf-card-title {
+    margin: 0 0 12px;
+    font-size: 18px;
+}
+
+.rf-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.rf-grid--times {
+    margin-top: 12px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.rf-field {
+    display: grid;
+    gap: 6px;
+}
+
+.rf-field--full {
+    grid-column: 1 / -1;
+}
+
+.rf-field label {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.rf-field input,
+.rf-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+}
+
+.rf-field input:focus,
+.rf-field textarea:focus {
+    border-color: rgba(155, 201, 165, 0.8);
+    box-shadow: 0 0 0 4px rgba(155, 201, 165, 0.15);
+}
+
+.rf-sections-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.rf-help {
+    margin: 0 0 10px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.rf-sections-root {
+    display: grid;
+    gap: 14px;
+}
+
+.rf-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 6px;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+    .rf-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rf-grid--times {
+        grid-template-columns: 1fr;
+    }
+
+    .rf-actions {
+        justify-content: stretch;
+        flex-direction: column;
+    }
+
+    .rf-actions .btn {
+        width: 100%;
+    }
+}

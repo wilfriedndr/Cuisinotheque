@@ -1,9 +1,84 @@
-{% extends "recipes/base.html" %}
+{% extends "recipes/base.html" %} {% load static %} {% block title %}Ajouter une
+recette — Cuisinothèque{% endblock %} {% block content %}
 
-{% block content %}
-<h1>Ajouter / Modifier une recette</h1>
-<form method="post" enctype="multipart/form-data">
+
+<section class="container recipe-form-page">
+  <header class="recipe-form-header">
+    <div>
+      <h1 class="recipe-form-title">Ajouter une recette</h1>
+      <p class="recipe-form-subtitle">
+        Crée ta recette avec des sections (ex: Génoise, Crème, Montage), puis
+        ajoute ingrédients & étapes.
+      </p>
+    </div>
+  </header>
+
+  <form id="recipeForm" class="recipe-form" method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
-    <button type="submit">Enregistrer</button>
-</form>
+
+    <!-- Infos principales -->
+    <div class="card rf-card">
+      <h2 class="rf-card-title">Infos</h2>
+
+      <div class="rf-grid">
+        <div class="rf-field">
+          <label for="title">Titre *</label>
+          <input id="title" name="title" type="text" placeholder="ex: Tiramisu" required/>
+        </div>
+
+        <div class="rf-field">
+          <label for="profile">Profil *</label>
+          <input id="profile" name="profile" type="text" placeholder="Pour qui et/ou par qui cette recette est conçue ?" required/>
+        </div>
+
+        <div class="rf-field rf-field--full">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="3" placeholder="Une note, une origine, un conseil…"></textarea>
+        </div>
+      </div>
+
+      <div class="rf-grid rf-grid--times">
+        <div class="rf-field">
+          <label>Préparation</label>
+          <input name="prep_time" type="text" placeholder="ex: 20 min / 1h30 / la veille"
+          />
+        </div>
+        <div class="rf-field">
+          <label>Cuisson</label>
+          <input name="cook_time" type="text" placeholder="ex: 30 min / jusqu'à doré"/>
+        </div>
+        <div class="rf-field">
+          <label>Repos</label>
+          <input name="rest_time" type="text" placeholder="ex: 2 h / une nuit"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sections dynamiques -->
+    <div class="card rf-card">
+      <div class="rf-sections-head">
+        <h2 class="rf-card-title">Sections</h2>
+        <button id="addSectionBtn" type="button" class="btn btn-primary rf-add-section"> + Ajouter une section</button>
+      </div>
+
+      <p class="rf-help">
+        Exemple : <strong>Génoise</strong>, <strong>Crème</strong>,
+        <strong>Montage</strong>.
+      </p>
+
+      <div id="sectionsRoot" class="rf-sections-root"></div>
+    </div>
+
+    <!-- JSON généré par recipe_form.js -->
+    <input type="hidden" id="recipePayload" name="payload" value="{}" />
+    <div class="rf-actions">
+      <button type="submit" class="btn btn-primary rf-submit">
+        Enregistrer
+      </button>
+      <a class="btn btn-ghost" href="{% url 'home' %}">Annuler</a>
+    </div>
+  </form>
+</section>
+
+<script src="{% static 'recipes/js/recipe_form.js' %}"></script>
 {% endblock %}
