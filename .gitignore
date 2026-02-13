@@ -27,3 +27,6 @@ media/
 
 # Static files
 staticfiles/
+
+# Gunicorn control socket
+gunicorn.ctl
