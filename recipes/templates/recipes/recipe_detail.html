@@ -1,6 +1,67 @@
-{% extends "recipes/base.html" %}
+{% extends "recipes/base.html" %} {% block content %}
+<div class="container recipe-detail">
+  <a class="recipe-detail__back" href="{% url 'recipe_list' %}">← Retour</a>
 
-{% block content %}
-<h1>Détail d’une recette</h1>
-<p>Ici seront affichés : image, description, ingrédients et étapes.</p>
+  <div class="recipe-detail__header">
+    <h1 class="recipe-detail__title">{{ recipe.title }}</h1>
+
+    <div class="recipe-detail__meta">
+      {% if recipe.profile %}
+      <span class="pill">{{ recipe.profile }}</span>
+      {% endif %} {% if recipe.prep_time %}
+      <span class="pill">Prépa: {{ recipe.prep_time }}</span>
+      {% endif %} {% if recipe.cook_time %}
+      <span class="pill">Cuisson: {{ recipe.cook_time }}</span>
+      {% endif %} {% if recipe.rest_time %}
+      <span class="pill">Repos: {{ recipe.rest_time }}</span>
+      {% endif %}
+    </div>
+
+    {% if recipe.description %}
+    <p class="recipe-detail__desc">{{ recipe.description }}</p>
+    {% endif %}
+  </div>
+
+  {% for section in sections %}
+  <div class="recipe-detail__section">
+    <h2 class="recipe-detail__section-title">{{ section.title }}</h2>
+
+    <div class="recipe-detail__cols">
+      <div>
+        <h3>Ingrédients</h3>
+
+        {% if section.ingredients.all %}
+        <ul class="recipe-detail__list">
+          {% for ing in section.ingredients.all %}
+          <li>
+            {% if ing.quantity %}{{ ing.quantity }}{% endif %} {% if ing.unit %}
+            {{ ing.unit }}{% endif %} {{ ing.name }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="recipe-detail__empty">Aucun ingrédient.</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <h3>Étapes</h3>
+
+        {% if section.steps.all %}
+        <ol class="recipe-detail__list">
+          {% for st in section.steps.all %}
+          <li>
+            {% if st.title %}<strong>{{ st.title }}</strong><br />{% endif %}
+            <span class="step-instruction">{{ st.instruction|linebreaksbr }}</span>
+          </li>
+          {% endfor %}
+        </ol>
+        {% else %}
+        <p class="recipe-detail__empty">Aucune étape.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
