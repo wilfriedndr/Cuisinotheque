@@ -1,0 +1,81 @@
+/* recipes/static/recipes/css/recipe_list.css */
+
+.recipe-list {
+    /* Le container gère souvent déjà le centrage, mais on ajoute un padding safe */
+    padding: 18px 0 28px;
+}
+
+.recipe-list__title {
+    margin: 0 0 12px;
+}
+
+/* Barre de recherche responsive */
+.recipe-list__search {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    /* clé pour mobile */
+    margin: 12px 0 18px;
+}
+
+.recipe-list__search input[type="text"] {
+    flex: 1;
+    min-width: 220px;
+    /* évite l’écrasement */
+    padding: 12px;
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+}
+
+.recipe-list__search button {
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.recipe-list__reset {
+    white-space: nowrap;
+}
+
+/* Grille centrée + responsive */
+.recipe-grid {
+    display: grid;
+    gap: 14px;
+
+    /* Colonnes adaptatives */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Cartes un peu plus “propres” */
+.recipe-card {
+    border: 1px solid #e1e1e1;
+    border-radius: 14px;
+    padding: 14px;
+}
+
+.recipe-card__title {
+    margin: 0 0 8px;
+}
+
+.recipe-card__desc {
+    margin: 0;
+    opacity: 0.85;
+    line-height: 1.35;
+}
+
+.recipe-card__actions {
+    margin-top: 12px;
+}
+
+.recipe-empty {
+    margin-top: 12px;
+}
+
+/* Mobile : bouton sur une ligne si besoin */
+@media (max-width: 520px) {
+    .recipe-list__search button {
+        width: 100%;
+    }
+}

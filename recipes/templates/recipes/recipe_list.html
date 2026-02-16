@@ -1,6 +1,43 @@
-{% extends "recipes/base.html" %}
+{% extends "recipes/base.html" %} {% load static %} {% block content %}
+<div class="container recipe-list">
+  <h1 class="recipe-list__title">Liste des recettes</h1>
 
-{% block content %}
-<h1>Liste des recettes</h1>
-<p>Ici s’afficheront toutes les recettes avec recherche et filtres.</p>
+  <form method="get" class="recipe-list__search">
+    <input
+      type="text"
+      name="q"
+      value="{{ q }}"
+      placeholder="Rechercher par titre..."
+    />
+    <button type="submit">Rechercher</button>
+
+    {% if q %}
+    <a class="recipe-list__reset" href="{% url 'recipe_list' %}"
+      >Réinitialiser</a
+    >
+    {% endif %}
+  </form>
+
+  {% if recipes %}
+  <div class="recipe-grid">
+    {% for r in recipes %}
+    <article class="recipe-card">
+      <h3 class="recipe-card__title">{{ r.title }}</h3>
+
+      {% if r.description %}
+      <p class="recipe-card__desc">{{ r.description|truncatechars:120 }}</p>
+      {% endif %}
+
+      <div class="recipe-card__actions">
+        <a href="{% url 'recipe_detail' r.pk %}">Voir</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="recipe-empty">
+    Aucune recette{% if q %} ne correspond à “{{ q }}”{% endif %}.
+  </p>
+  {% endif %}
+</div>
 {% endblock %}

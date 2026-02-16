@@ -10,7 +10,16 @@ def home(request):
     return render(request, "recipes/home.html")
 
 def recipe_list(request):
-    return render(request, "recipes/recipe_list.html")
+    q = (request.GET.get("q") or "").strip()
+
+    recipes = Recipe.objects.all().order_by("-id")
+    if q:
+        recipes = recipes.filter(title__icontains=q)
+
+    return render(request, "recipes/recipe_list.html", {
+        "recipes": recipes,
+        "q": q,
+    })
 
 def recipe_detail(request, pk):
     return render(request, "recipes/recipe_detail.html", {"pk": pk})
