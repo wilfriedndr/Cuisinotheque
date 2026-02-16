@@ -15,23 +15,6 @@ def recipe_list(request):
 def recipe_detail(request, pk):
     return render(request, "recipes/recipe_detail.html", {"pk": pk})
 
-def _to_decimal_or_none(value):
-    if value in (None, "", "null"):
-        return None
-    try:
-        return Decimal(str(value))
-    except (InvalidOperation, ValueError, TypeError):
-        return None
-
-
-def _to_int_or_none(value):
-    if value in (None, "", "null"):
-        return None
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
-
 @require_http_methods(["GET", "POST"])
 def recipe_create(request):
     if request.method == "GET":
@@ -82,7 +65,7 @@ def recipe_create(request):
             order=s_idx,
         )
 
-        # Ingredients (ok)
+        # Ingredients
         ingredients = section_data.get("ingredients", [])
         if isinstance(ingredients, list):
             for i_idx, ing in enumerate(ingredients, start=1):
@@ -122,8 +105,8 @@ def recipe_create(request):
 
                 Step.objects.create(
                     section=section,
-                    title=step_title,         # (optionnel car blank=True)
-                    instruction=instruction,  # ✅ instruction (pas text)
+                    title=step_title,
+                    instruction=instruction,
                     order=st_idx,
                 )
 
