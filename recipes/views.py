@@ -1,7 +1,7 @@
 import json
 from decimal import Decimal, InvalidOperation
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 
 from .models import Recipe, RecipeSection, IngredientItem, Step
@@ -147,8 +147,8 @@ def recipe_create(request):
                     order=st_idx,
                 )
 
-    return JsonResponse({"ok": True, "recipe_id": recipe.pk})
-
+    # Redirect to created recipe detail page
+    return redirect("recipe_detail", pk=recipe.pk)
 
 def recipe_update(request, pk):
     return render(request, "recipes/recipe_form.html", {"pk": pk})
