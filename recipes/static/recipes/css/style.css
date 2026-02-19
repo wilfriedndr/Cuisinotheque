@@ -9,8 +9,8 @@
   --bg: #F3EFE8;
   --surface: #FFFFFF;
   --surface-2: #FAF7F2;
-  --text: #2E2E2E;
-  --muted: rgba(51, 51, 51, 0.72);
+  --text: #353739;
+  --muted: rgba(53, 55, 57, 0.74);
   --border: #D8D8D8;
   --logo-blur-color: rgba(124, 161, 204, 0.30);
 
@@ -40,8 +40,8 @@ html.theme-light {
   --surface: #212121;
   --surface-2: #1C1C1C;
 
-  --text: #E6E6E6;
-  --muted: rgba(230, 230, 230, 0.70);
+  --text: #D7DAE0;
+  --muted: rgba(215, 218, 224, 0.72);
   --border: rgba(230, 230, 230, 0.10);
 
   --primary: #7FB28F;
@@ -83,6 +83,31 @@ body {
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+/* Mode clair: textarea + champs a placeholder alignes avec le fond page */
+.theme-light textarea,
+.theme-light input[placeholder] {
+  background: var(--bg);
+}
+
+.theme-light input[placeholder]::placeholder,
+.theme-light textarea::placeholder {
+  color: color-mix(in srgb, var(--text) 56%, var(--bg));
+}
+
+.theme-light .theme-toggle {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.theme-light .pill {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.theme-light .features-grid .card {
+  background: var(--surface-2);
 }
 
 a {
@@ -178,8 +203,20 @@ a {
 .theme-toggle .theme-icon {
   font-size: 16px;
   line-height: 1;
-  display: inline-block;
+  display: block;
   transform-origin: center;
+  position: relative;
+  top: 1px;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .header-actions {
@@ -444,8 +481,78 @@ body.no-scroll {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, var(--secondary)));
-  color: #1E1E1E;
+  background: color-mix(in srgb, var(--primary) 78%, var(--secondary));
+  color: var(--text);
+}
+
+.btn-secondary {
+  background: #86A6CF;
+  border: 1px solid color-mix(in srgb, #86A6CF 72%, #5f7ea8);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: color-mix(in srgb, #86A6CF 84%, #ffffff);
+  border-color: color-mix(in srgb, #86A6CF 80%, #5f7ea8);
+}
+
+.theme-dark .btn-secondary {
+  background: #6F97C6;
+  border: 1px solid color-mix(in srgb, #6F97C6 72%, #4c6788);
+  color: #2C3035;
+}
+
+.theme-dark .btn-secondary:hover {
+  background: color-mix(in srgb, #6F97C6 86%, #9cb8da);
+  border-color: color-mix(in srgb, #6F97C6 80%, #4c6788);
+}
+
+.btn-home-primary {
+  background: #A6CDB3;
+  border: 1px solid #78A488;
+  color: var(--text);
+}
+
+.btn-home-primary:hover {
+  background: #78A488;
+  border-color: #78A488;
+}
+
+.btn-home-secondary {
+  background: #9EBBDE;
+  border: 1px solid #6D8FB9;
+  color: var(--text);
+}
+
+.btn-home-secondary:hover {
+  background: #6D8FB9;
+  border-color: #6D8FB9;
+}
+
+.theme-dark .btn-home-primary {
+  background: #5E876E;
+  border-color: #8EBA9F;
+  color: #2C3035;
+}
+
+.theme-dark .btn-home-primary:hover {
+  background: #8EBA9F;
+  border-color: #8EBA9F;
+}
+
+.theme-dark .btn-home-secondary {
+  background: #5F81AA;
+  border-color: #97B5DA;
+  color: #2C3035;
+}
+
+.theme-dark .btn-home-secondary:hover {
+  background: #97B5DA;
+  border-color: #97B5DA;
+}
+
+.theme-dark .btn {
+  color: #2C3035;
 }
 
 .btn-ghost {
