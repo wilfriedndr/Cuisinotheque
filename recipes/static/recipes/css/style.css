@@ -485,28 +485,6 @@ body.no-scroll {
   color: var(--text);
 }
 
-.btn-secondary {
-  background: #86A6CF;
-  border: 1px solid color-mix(in srgb, #86A6CF 72%, #5f7ea8);
-  color: var(--text);
-}
-
-.btn-secondary:hover {
-  background: color-mix(in srgb, #86A6CF 84%, #ffffff);
-  border-color: color-mix(in srgb, #86A6CF 80%, #5f7ea8);
-}
-
-.theme-dark .btn-secondary {
-  background: #6F97C6;
-  border: 1px solid color-mix(in srgb, #6F97C6 72%, #4c6788);
-  color: #2C3035;
-}
-
-.theme-dark .btn-secondary:hover {
-  background: color-mix(in srgb, #6F97C6 86%, #9cb8da);
-  border-color: color-mix(in srgb, #6F97C6 80%, #4c6788);
-}
-
 .btn-home-primary {
   background: #A6CDB3;
   border: 1px solid #78A488;
