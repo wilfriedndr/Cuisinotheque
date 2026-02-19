@@ -52,7 +52,7 @@
           {% for st in section.steps.all %}
           <li>
             {% if st.title %}<strong>{{ st.title }}</strong><br />{% endif %}
-            <span class="step-instruction">{{ st.instruction|linebreaksbr }}</span>
+            <span>{{ st.instruction|linebreaksbr }}</span>
           </li>
           {% endfor %}
         </ol>

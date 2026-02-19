@@ -36,12 +36,15 @@
         } catch (e) {}
       })();
     </script>
-    
+
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'recipes/css/style.css' %}"/>
-    <link rel="stylesheet" href="{% static 'recipes/css/recipe_form.css' %}"/>
-    <link rel="stylesheet" href="{% static 'recipes/css/recipe_list.css' %}"/>
-    <link rel="stylesheet" href="{% static 'recipes/css/recipe_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'recipes/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'recipes/css/recipe_form.css' %}" />
+    <link rel="stylesheet" href="{% static 'recipes/css/recipe_list.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'recipes/css/recipe_detail.css' %}"
+    />
     {% block extra_css %}{% endblock %}
   </head>
 
@@ -71,20 +74,47 @@
           <button class="icon-btn theme-toggle" type="button" id="themeToggle">
             <i class="fa-solid fa-moon theme-icon" aria-hidden="true"></i>
           </button>
-          <button class="icon-btn nav-toggle" type="button" id="navToggle" aria-label="Ouvrir le menu" aria-controls="mobileNavOverlay" aria-expanded="false">
+          <button
+            class="icon-btn nav-toggle"
+            type="button"
+            id="navToggle"
+            aria-label="Ouvrir le menu"
+            aria-controls="mobileNavOverlay"
+            aria-expanded="false"
+          >
             <i class="fa-solid fa-bars" aria-hidden="true"></i>
           </button>
         </div>
       </div>
     </header>
 
-    <div class="mobile-nav-overlay" id="mobileNavOverlay" hidden aria-hidden="true">
-      <button class="mobile-nav-backdrop" id="mobileNavBackdrop" type="button" aria-label="Fermer le menu">
-      </button>
-      <div class="mobile-nav-panel" id="mobileNavPanel" role="dialog" aria-modal="true" aria-label="Menu">
+    <div
+      class="mobile-nav-overlay"
+      id="mobileNavOverlay"
+      hidden
+      aria-hidden="true"
+    >
+      <button
+        class="mobile-nav-backdrop"
+        id="mobileNavBackdrop"
+        type="button"
+        aria-label="Fermer le menu"
+      ></button>
+      <div
+        class="mobile-nav-panel"
+        id="mobileNavPanel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+      >
         <div class="mobile-nav-top">
-          <span class="mobile-nav-title">Menu</span>
-          <button class="icon-btn" id="mobileNavClose" type="button" aria-label="Fermer le menu">
+          <span>Menu</span>
+          <button
+            class="icon-btn"
+            id="mobileNavClose"
+            type="button"
+            aria-label="Fermer le menu"
+          >
             <i class="fa-solid fa-xmark" aria-hidden="true"></i>
           </button>
         </div>
@@ -101,13 +131,12 @@
 
     <main id="main" class="site-main">{% block content %}{% endblock %}</main>
 
-    {% comment %}
-    <footer class="site-footer js-footer">
+    <footer class="site-footer">
       <div class="container">
-        <small>© 2025 Cuisinothèque</small>
+        <small>© 2025 Cuisinothèque</small><br />
+        <small>made with ❤️</small>
       </div>
     </footer>
-    {% endcomment %}
 
     <!-- GSAP -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
