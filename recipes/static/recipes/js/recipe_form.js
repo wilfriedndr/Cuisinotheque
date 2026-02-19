@@ -30,27 +30,27 @@
       sectionEl.dataset.sectionId = section.id;
 
       sectionEl.innerHTML = `
-        <div class="rf-sections-head" style="margin-bottom:10px;">
-          <div style="display:flex; gap:10px; align-items:center; width:100%;">
-            <strong style="min-width:80px;">Section</strong>
+        <div class="rf-sections-head rf-section-head">
+          <div class="rf-section-name-wrap">
+            <strong class="rf-section-name-label">Section</strong>
             <input type="text" class="section-name" placeholder="ex: Génoise, Crème, Montage"
-                   value="${escapeHtml(section.name)}" style="flex:1;">
+                   value="${escapeHtml(section.name)}">
           </div>
           <button type="button" class="btn btn--ghost btn-remove-section">Supprimer</button>
         </div>
 
-        <div style="display:grid; gap:12px;">
+        <div class="rf-section-body">
           <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <strong>Ingrédients</strong>
+            <div class="rf-subsection-head">
+              <strong class="rf-subsection-title">Ingrédients</strong>
               <button type="button" class="btn btn--soft btn-add-ingredient">+ Ajouter ingrédient</button>
             </div>
             <div class="ingredients"></div>
           </div>
 
           <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <strong>Étapes</strong>
+            <div class="rf-subsection-head">
+              <strong class="rf-subsection-title">Étapes</strong>
               <button type="button" class="btn btn--soft btn-add-step">+ Ajouter étape</button>
             </div>
             <div class="steps"></div>
@@ -62,9 +62,7 @@
       const ingWrap = sectionEl.querySelector(".ingredients");
       section.ingredients.forEach((ing, iIndex) => {
         const row = document.createElement("div");
-        row.className = "rf-grid";
-        row.style.gridTemplateColumns = "2fr 1fr 1fr auto";
-        row.style.alignItems = "end";
+        row.className = "rf-grid rf-ingredient-row";
 
         row.innerHTML = `
           <div class="rf-field">
@@ -79,7 +77,7 @@
             <label>Unité</label>
             <input type="text" class="ing-unit" placeholder="g, ml, c.à.s" value="${escapeHtml(ing.unit)}">
           </div>
-          <button type="button" class="btn btn--ghost btn-remove-ingredient" style="height:40px;">✕</button>
+          <button type="button" class="btn btn--ghost btn-remove-ingredient rf-remove-btn">✕</button>
         `;
 
         // listeners ingredient inputs
@@ -108,14 +106,13 @@
       const stepsWrap = sectionEl.querySelector(".steps");
       section.steps.forEach((st, stIndex) => {
         const row = document.createElement("div");
-        row.className = "rf-field";
-        row.style.marginBottom = "10px";
+        row.className = "rf-field rf-step-row";
 
         row.innerHTML = `
           <label>Étape ${stIndex + 1}</label>
-          <div style="display:flex; gap:10px; align-items:center;">
+          <div class="rf-step-input-row">
             <textarea class="step-text" rows="2" placeholder="Décris l'étape...">${escapeHtml(st.text)}</textarea>
-            <button type="button" class="btn btn--ghost btn-remove-step" style="height:40px;">✕</button>
+            <button type="button" class="btn btn--ghost btn-remove-step rf-remove-btn">✕</button>
           </div>
         `;
 
