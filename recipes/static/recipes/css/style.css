@@ -85,17 +85,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Mode clair: textarea + champs a placeholder alignes avec le fond page */
-.theme-light textarea,
-.theme-light input[placeholder] {
-  background: var(--bg);
-}
-
-.theme-light input[placeholder]::placeholder,
-.theme-light textarea::placeholder {
-  color: color-mix(in srgb, var(--text) 56%, var(--bg));
-}
-
 .theme-light .theme-toggle {
   background: var(--surface-2);
   border-color: var(--border);
