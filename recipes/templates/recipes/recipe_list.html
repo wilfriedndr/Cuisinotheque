@@ -1,43 +1,179 @@
-{% extends "recipes/base.html" %} {% block content %}
-<div class="container recipe-list">
-  <h1 class="recipe-list__title">Liste des recettes</h1>
+{% extends "recipes/base.html" %}
+{% load static %}
+{% block title %}Recettes | Cuisinothèque{% endblock %}
+{% block content %}
+<section class="container recipe-list" aria-labelledby="recipe-list-title">
+  {# Titre + sous-titre dynamique (mis à jour aussi côté JS lors du filtrage live) #}
+  <header class="recipe-list__header">
+    <h1 id="recipe-list-title" class="recipe-list__title">Liste des recettes</h1>
+    <p class="recipe-list__subtitle">
+      {% with total=recipes|length %}
+        {% if q or profile %}
+          {{ total }} recette{% if total > 1 %}s{% endif %} trouvee{% if total > 1 %}s{% endif %}
+          {% if q %} pour “{{ q }}”{% endif %}
+          {% if profile %}{% if q %} dans le profil{% else %} pour le profil{% endif %} “{{ profile }}”{% endif %}.
+        {% else %}
+          {{ total }} recette{% if total > 1 %}s{% endif %} disponible{% if total > 1 %}s{% endif %} dans votre cuisinothèque.
+        {% endif %}
+      {% endwith %}
+    </p>
+  </header>
 
-  <form method="get" class="recipe-list__search">
+  {# Barre de recherche + filtre profil (filtrage en direct côté recipe_list.js) #}
+  <form method="get" class="recipe-list__search" role="search" autocomplete="off">
     <input
+      id="recipe-search-input"
+      class="recipe-list__search-input"
       type="text"
       name="q"
       value="{{ q }}"
-      placeholder="Rechercher par titre..."
+      placeholder="Rechercher par titre ou profil..."
+      aria-label="Rechercher une recette par son titre ou son profil"
     />
-    <button type="submit">Rechercher</button>
+    <div class="recipe-list__filter-wrap">
+      <label id="recipe-profile-label" for="recipe-profile-select-native" class="recipe-list__filter-label">Profil</label>
+      <div class="recipe-select" data-profile-select>
+        <select
+          id="recipe-profile-select-native"
+          class="recipe-list__search-select-native"
+          name="profile"
+          aria-label="Filtrer par profil"
+        >
+          <option value="">Tous les profils</option>
+          {% for p in profiles %}
+            <option value="{{ p }}" {% if p == profile %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
 
-    {% if q %}
-    <a class="recipe-list__reset" href="{% url 'recipe_list' %}"
-      >Réinitialiser</a
-    >
-    {% endif %}
+        <button
+          type="button"
+          class="recipe-select__trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-controls="recipeProfileMenu"
+        >
+          <span class="recipe-select__trigger-text" data-role="selected-label">
+            {% if profile %}{{ profile }}{% else %}Tous les profils{% endif %}
+          </span>
+          <span class="recipe-select__trigger-icon" aria-hidden="true"></span>
+        </button>
+
+        <ul class="recipe-select__menu" id="recipeProfileMenu" role="listbox" aria-labelledby="recipe-profile-label">
+          <li>
+            <button type="button" class="recipe-select__option{% if not profile %} is-selected{% endif %}" data-value="">
+              Tous les profils
+            </button>
+          </li>
+          {% for p in profiles %}
+            <li>
+              <button type="button" class="recipe-select__option{% if p == profile %} is-selected{% endif %}" data-value="{{ p }}">
+                {{ p }}
+              </button>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <a class="recipe-list__reset" href="{% url 'recipe_list' %}" {% if not q and not profile %}hidden{% endif %}>
+      Reinitialiser
+    </a>
   </form>
 
-  {% if recipes %}
-  <div class="recipe-grid">
-    {% for r in recipes %}
-    <article class="recipe-card">
-      <h3 class="recipe-card__title">{{ r.title }}</h3>
+  {# Grille de cartes recettes (chaque carte embarque les données de la pancarte) #}
+  <div class="recipe-grid" {% if not recipes %}hidden{% endif %}>
+      {% for r in recipes %}
+        <a
+          class="recipe-card"
+          href="{% url 'recipe_detail' r.pk %}"
+          aria-label="Voir la recette {{ r.title }}"
+          data-recipe-title="{{ r.title }}"
+          data-recipe-profile="{{ r.profile|default_if_none:'' }}"
+          data-recipe-description="{% if r.description %}{{ r.description|striptags }}{% endif %}"
+          data-recipe-prep="{{ r.prep_time|default_if_none:'' }}"
+          data-recipe-cook="{{ r.cook_time|default_if_none:'' }}"
+          data-recipe-rest="{{ r.rest_time|default_if_none:'' }}"
+        >
+          <div class="recipe-card__head">
+            <h2 class="recipe-card__title">{{ r.title }}</h2>
+            {% if r.profile %}
+              <span class="recipe-card__profile" aria-label="Profil">{{ r.profile }}</span>
+            {% else %}
+              <span class="recipe-card__profile recipe-card__profile--empty">Profil non renseigne</span>
+            {% endif %}
+          </div>
 
-      {% if r.description %}
-      <p class="recipe-card__desc">{{ r.description|truncatechars:120 }}</p>
-      {% endif %}
+          <p class="recipe-card__desc">
+            {% if r.description %}
+              {{ r.description|truncatechars:140 }}
+            {% else %}
+              Aucune description pour le moment.
+            {% endif %}
+          </p>
 
-      <div class="recipe-card__actions">
-        <a href="{% url 'recipe_detail' r.pk %}">Voir</a>
-      </div>
-    </article>
-    {% endfor %}
+          {# Données sources invisibles, copiées dans la pancarte au survol #}
+          <div class="recipe-card__hover-data" hidden>
+            <p data-role="description-source">
+              {% if r.description %}{{ r.description|striptags }}{% endif %}
+            </p>
+            <ul data-role="ingredients-source">
+              {% for section in r.sections.all %}
+                {% if section.ingredients.all %}
+                  <li>
+                    Étape {{ section.title|default:"Section" }}:
+                    {% for ing in section.ingredients.all %}
+                      {% if ing.quantity %}{{ ing.quantity }} {% endif %}
+                      {% if ing.unit %}{{ ing.unit }} {% endif %}
+                      {{ ing.name }}{% if ing.note %} ({{ ing.note }}){% endif %}{% if not forloop.last %} + {% endif %}
+                    {% endfor %}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            <ol data-role="steps-source">
+              {% for section in r.sections.all %}
+                {% for st in section.steps.all %}
+                  <li>
+                    {% if section.title %}{{ section.title }} · {% endif %}
+                    {% if st.title %}{{ st.title }}: {% endif %}
+                    {{ st.instruction|striptags }}
+                  </li>
+                {% endfor %}
+              {% endfor %}
+            </ol>
+          </div>
+        </a>
+      {% endfor %}
   </div>
-  {% else %}
-  <p class="recipe-empty">
-    Aucune recette{% if q %} ne correspond à “{{ q }}”{% endif %}.
-  </p>
-  {% endif %}
-</div>
+
+  <article class="recipe-empty" {% if recipes %}hidden{% endif %}>
+      <h2 class="recipe-empty__title">Aucune recette trouvee</h2>
+      <p class="recipe-empty__text">
+        {% if q or profile %}
+          Aucun resultat ne correspond aux filtres actuels.
+        {% else %}
+          Votre catalogue est vide pour le moment.
+        {% endif %}
+      </p>
+      <a class="recipe-empty__cta" href="{% url 'recipe_create' %}">Ajouter une premiere recette</a>
+  </article>
+
+  {# Pancarte hover globale: positionnée/remplie/animée en JS #}
+  <aside class="recipe-hover-card" id="recipeHoverCard" aria-hidden="true" hidden>
+    <h2 class="recipe-hover-card__title" data-role="title"></h2>
+    <p class="recipe-hover-card__profile" data-role="profile"></p>
+    <p class="recipe-hover-card__times" data-role="times"></p>
+    <p class="recipe-hover-card__description" data-role="description"></p>
+    <div class="recipe-hover-card__blocks">
+      <div class="recipe-hover-card__block">
+        <h3 class="recipe-hover-card__block-title">Ingredients</h3>
+        <ul class="recipe-hover-card__list" data-role="ingredients"></ul>
+      </div>
+      <div class="recipe-hover-card__block">
+        <h3 class="recipe-hover-card__block-title">Etapes</h3>
+        <ol class="recipe-hover-card__list" data-role="steps"></ol>
+      </div>
+    </div>
+  </aside>
+</section>
+<script src="{% static 'recipes/js/recipe_list.js' %}"></script>
 {% endblock %}
