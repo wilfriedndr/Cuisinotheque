@@ -21,6 +21,103 @@
   const compact = (arr) => arr.filter(Boolean);
 
   // ----------------------------
+  // Recipe list hover card (GSAP API)
+  // ----------------------------
+  function setPopupVisibleState(panel, isVisible) {
+    if (!panel) return;
+    panel.hidden = !isVisible;
+    panel.setAttribute("aria-hidden", String(!isVisible));
+  }
+
+  const recipeListPopupAnimations = {
+    show(panel) {
+      if (!panel) return;
+
+      if (reduceMotion() || !hasGSAP()) {
+        panel.style.opacity = "1";
+        panel.style.transform = "none";
+        return;
+      }
+
+      const placement = panel.getAttribute("data-placement") || "right";
+      const fromX = placement === "right" ? -34 : 34;
+      const fromRotate = placement === "right" ? -2.4 : 2.4;
+
+      gsap().killTweensOf(panel);
+      gsap().set(panel, {
+        autoAlpha: 0,
+        x: fromX,
+        y: 8,
+        scale: 0.86,
+        rotate: fromRotate,
+        filter: "blur(4px)",
+        transformOrigin: placement === "right" ? "0% 50%" : "100% 50%",
+      });
+
+      const tl = gsap().timeline();
+      tl.to(panel, {
+        autoAlpha: 1,
+        x: 0,
+        y: 0,
+        scale: 1.03,
+        rotate: 0,
+        filter: "blur(0px)",
+        duration: 0.34,
+        ease: "expo.out",
+      }).to(panel, {
+        scale: 1,
+        duration: 0.14,
+        ease: "power2.out",
+      }, "-=0.05");
+    },
+
+    hide(panel, onComplete) {
+      if (!panel) {
+        if (typeof onComplete === "function") onComplete();
+        return;
+      }
+
+      const finish = () => {
+        if (hasGSAP()) {
+          gsap().set(panel, { clearProps: "opacity,transform,visibility,filter" });
+        } else {
+          panel.style.removeProperty("opacity");
+          panel.style.removeProperty("transform");
+          panel.style.removeProperty("filter");
+        }
+        setPopupVisibleState(panel, false);
+        if (typeof onComplete === "function") onComplete();
+      };
+
+      if (panel.hidden || panel.getAttribute("aria-hidden") === "true") {
+        finish();
+        return;
+      }
+
+      if (reduceMotion() || !hasGSAP()) {
+        finish();
+        return;
+      }
+
+      gsap().killTweensOf(panel);
+      gsap().to(panel, {
+        autoAlpha: 0,
+        x: panel.getAttribute("data-placement") === "right" ? -20 : 20,
+        y: 4,
+        scale: 0.9,
+        rotate: panel.getAttribute("data-placement") === "right" ? -1.2 : 1.2,
+        filter: "blur(2px)",
+        duration: 0.24,
+        ease: "power3.in",
+        onComplete: finish,
+      });
+    },
+  };
+
+  // Rendu accessible depuis recipe_list.js (show/hide de la pancarte)
+  window.recipeListPopupAnimations = recipeListPopupAnimations;
+
+  // ----------------------------
   // Theme (apply + icon)
   // ----------------------------
   function getPreferredTheme() {
@@ -231,6 +328,74 @@
   // GSAP: entrance animations + breathe
   // ----------------------------
   if (reduceMotion() || !hasGSAP()) return;
+
+  // Recette list page: focus d'abord sur la recherche/filtre, puis cartes en "pop"
+  const recipeListSection = document.querySelector(".recipe-list");
+  if (recipeListSection) {
+    const recipeHeader = recipeListSection.querySelector(".recipe-list__header");
+    const recipeSearchInput = recipeListSection.querySelector(".recipe-list__search-input");
+    const recipeProfileFilter = recipeListSection.querySelector(".recipe-list__filter-wrap");
+    const recipeResetLink = recipeListSection.querySelector(".recipe-list__reset:not([hidden])");
+    const recipeCards = Array.from(recipeListSection.querySelectorAll(".recipe-card"));
+    const recipeEmptyState = recipeListSection.querySelector(".recipe-empty:not([hidden])");
+
+    const searchFirst = compact([
+      recipeHeader,
+      recipeSearchInput,
+      recipeProfileFilter,
+      recipeResetLink,
+    ]);
+
+    gsap().set(searchFirst, { autoAlpha: 0, y: 12 });
+    gsap().set(recipeCards, {
+      autoAlpha: 0,
+      y: 16,
+      scale: 0.96,
+      transformOrigin: "50% 50%",
+    });
+    if (recipeEmptyState) gsap().set(recipeEmptyState, { autoAlpha: 0, y: 12 });
+
+    const listTl = gsap().timeline({ defaults: { ease: "power2.out" } });
+    // UX: on montre d'abord la recherche/filtre, puis les cartes en "pop"
+    listTl.to(searchFirst, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.42,
+      stagger: 0.08,
+    });
+
+    if (recipeCards.length) {
+      listTl.to(
+        recipeCards,
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.44,
+          stagger: 0.05,
+          ease: "back.out(1.55)",
+        },
+        "-=0.08"
+      );
+    } else if (recipeEmptyState) {
+      listTl.to(
+        recipeEmptyState,
+        { autoAlpha: 1, y: 0, duration: 0.42 },
+        "-=0.08"
+      );
+    }
+
+    listTl.eventCallback("onComplete", () => {
+      const toClear = compact([
+        ...searchFirst,
+        ...recipeCards,
+        recipeEmptyState,
+      ]);
+      gsap().set(toClear, { clearProps: "opacity,transform,visibility" });
+    });
+
+    return;
+  }
 
   const t = {
     heroLeft: qAnim("hero-left"),
