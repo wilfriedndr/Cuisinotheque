@@ -1,5 +1,6 @@
 import json
 from decimal import Decimal, InvalidOperation
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
@@ -12,11 +13,33 @@ def home(request):
 
 
 def recipe_list(request):
+    # Filtres saisis depuis la barre de recherche et le select profil
     q = (request.GET.get("q") or "").strip()
+    profile = (request.GET.get("profile") or "").strip()
 
-    recipes = Recipe.objects.all().order_by("-id")
+    recipes = Recipe.objects.all()
+    # Recherche texte: on matche le titre OU le profil
     if q:
-        recipes = recipes.filter(title__icontains=q)
+        recipes = recipes.filter(
+            Q(title__icontains=q) | Q(profile__icontains=q)
+        )
+    # Filtre strict sur un profil choisi
+    if profile:
+        recipes = recipes.filter(profile=profile)
+
+    # Préchargement des relations pour alimenter la pancarte hover
+    recipes = recipes.order_by("-id").prefetch_related(
+        "sections__ingredients",
+        "sections__steps",
+    )
+    # Options du filtre profil (liste distincte, triée)
+    profiles = (
+        Recipe.objects.exclude(profile__isnull=True)
+        .exclude(profile="")
+        .values_list("profile", flat=True)
+        .distinct()
+        .order_by("profile")
+    )
 
     return render(
         request,
@@ -24,6 +47,8 @@ def recipe_list(request):
         {
             "recipes": recipes,
             "q": q,
+            "profile": profile,
+            "profiles": profiles,
         },
     )
 
