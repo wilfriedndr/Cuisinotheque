@@ -115,31 +115,41 @@
             <p data-role="description-source">
               {% if r.description %}{{ r.description|striptags }}{% endif %}
             </p>
-            <ul data-role="ingredients-source">
+            <div data-role="ingredients-source">
               {% for section in r.sections.all %}
                 {% if section.ingredients.all %}
-                  <li>
-                    Étape {{ section.title|default:"Section" }}:
-                    {% for ing in section.ingredients.all %}
-                      {% if ing.quantity %}{{ ing.quantity }} {% endif %}
-                      {% if ing.unit %}{{ ing.unit }} {% endif %}
-                      {{ ing.name }}{% if ing.note %} ({{ ing.note }}){% endif %}{% if not forloop.last %} + {% endif %}
-                    {% endfor %}
-                  </li>
+                  <div data-role="section-group">
+                    <h4 data-role="section-title">{{ section.title|default:"Section" }}</h4>
+                    <ul data-role="section-items">
+                      {% for ing in section.ingredients.all %}
+                        <li>
+                          {% if ing.quantity %}{{ ing.quantity|floatformat:"-2" }} {% endif %}
+                          {% if ing.unit %}{{ ing.unit }} {% endif %}
+                          {{ ing.name }}{% if ing.note %} ({{ ing.note }}){% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 {% endif %}
               {% endfor %}
-            </ul>
-            <ol data-role="steps-source">
+            </div>
+            <div data-role="steps-source">
               {% for section in r.sections.all %}
-                {% for st in section.steps.all %}
-                  <li>
-                    {% if section.title %}{{ section.title }} · {% endif %}
-                    {% if st.title %}{{ st.title }}: {% endif %}
-                    {{ st.instruction|striptags }}
-                  </li>
-                {% endfor %}
+                {% if section.steps.all %}
+                  <div data-role="section-group">
+                    <h4 data-role="section-title">{{ section.title|default:"Section" }}</h4>
+                    <ol data-role="section-items">
+                      {% for st in section.steps.all %}
+                        <li>
+                          {% if st.title %}<span data-role="step-title">{{ st.title }}</span>{% endif %}
+                          <span data-role="step-instruction">{{ st.instruction|striptags }}</span>
+                        </li>
+                      {% endfor %}
+                    </ol>
+                  </div>
+                {% endif %}
               {% endfor %}
-            </ol>
+            </div>
           </div>
         </a>
       {% endfor %}
@@ -166,11 +176,11 @@
     <div class="recipe-hover-card__blocks">
       <div class="recipe-hover-card__block">
         <h3 class="recipe-hover-card__block-title">Ingredients</h3>
-        <ul class="recipe-hover-card__list" data-role="ingredients"></ul>
+        <div class="recipe-hover-card__group-list" data-role="ingredients"></div>
       </div>
       <div class="recipe-hover-card__block">
         <h3 class="recipe-hover-card__block-title">Etapes</h3>
-        <ol class="recipe-hover-card__list" data-role="steps"></ol>
+        <div class="recipe-hover-card__group-list" data-role="steps"></div>
       </div>
     </div>
   </aside>

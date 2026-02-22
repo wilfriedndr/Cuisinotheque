@@ -401,11 +401,41 @@
   color: color-mix(in srgb, var(--text) 66%, var(--surface));
 }
 
+.recipe-hover-card__group-list {
+  display: grid;
+  gap: 10px;
+}
+
+.recipe-hover-card__group {
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-2) 58%, transparent);
+  padding: 10px 10px 8px;
+}
+
+.theme-light .recipe-hover-card__group {
+  background: #f0f1f3;
+  border-color: #c1c6ce;
+}
+
+.recipe-hover-card__group-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text) 70%, var(--surface));
+}
+
 .recipe-hover-card__list {
   margin: 0;
   padding-left: 20px;
   display: grid;
-  gap: 8px;
+  gap: 7px;
+}
+
+.recipe-hover-card__list--ordered {
+  gap: 9px;
 }
 
 .recipe-hover-card::-webkit-scrollbar {
@@ -448,6 +478,26 @@
   line-height: 1.5;
   color: color-mix(in srgb, var(--text) 90%, var(--surface));
   overflow-wrap: anywhere;
+}
+
+.recipe-hover-card__step-label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text) 68%, var(--surface));
+}
+
+.recipe-hover-card__step-text {
+  display: block;
+}
+
+.recipe-hover-card__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .theme-dark .recipe-list__reset {

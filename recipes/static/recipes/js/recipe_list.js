@@ -178,22 +178,114 @@
     return parts.join(" | ");
   }
 
-  function fillList(target, source, emptyText) {
+  function appendEmptyGroup(target, emptyText) {
+    if (!target) return;
+    const empty = document.createElement("p");
+    empty.className = "recipe-hover-card__empty";
+    empty.textContent = emptyText;
+    target.appendChild(empty);
+  }
+
+  function renderGroupedBlocks(target, source, options = {}) {
     if (!target) return;
     target.textContent = "";
 
-    const sourceItems = source ? Array.from(source.querySelectorAll(":scope > li")) : [];
+    const ordered = Boolean(options.ordered);
+    const emptyText = options.emptyText || "Aucune donnée.";
 
-    if (!sourceItems.length) {
-      const emptyItem = document.createElement("li");
-      emptyItem.textContent = emptyText;
-      target.appendChild(emptyItem);
+    const groups = source
+      ? Array.from(source.querySelectorAll(':scope > [data-role="section-group"]'))
+      : [];
+
+    if (!groups.length) {
+      const legacyItems = source ? Array.from(source.querySelectorAll(":scope > li")) : [];
+      if (!legacyItems.length) {
+        appendEmptyGroup(target, emptyText);
+        return;
+      }
+
+      const fallbackGroup = document.createElement("div");
+      fallbackGroup.className = "recipe-hover-card__group";
+
+      const fallbackTitle = document.createElement("h4");
+      fallbackTitle.className = "recipe-hover-card__group-title";
+      fallbackTitle.textContent = "Préparation";
+      fallbackGroup.appendChild(fallbackTitle);
+
+      const fallbackList = document.createElement(ordered ? "ol" : "ul");
+      fallbackList.className = ordered
+        ? "recipe-hover-card__list recipe-hover-card__list--ordered"
+        : "recipe-hover-card__list";
+
+      legacyItems.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = clean(item.textContent);
+        fallbackList.appendChild(li);
+      });
+
+      fallbackGroup.appendChild(fallbackList);
+      target.appendChild(fallbackGroup);
       return;
     }
 
-    sourceItems.forEach((item) => {
-      target.appendChild(item.cloneNode(true));
+    groups.forEach((group) => {
+      const sectionTitleEl = group.querySelector('[data-role="section-title"]');
+      const sectionItemsEl = group.querySelector('[data-role="section-items"]');
+      const sectionItems = sectionItemsEl
+        ? Array.from(sectionItemsEl.querySelectorAll(":scope > li"))
+        : [];
+
+      if (!sectionItems.length) return;
+
+      const groupEl = document.createElement("div");
+      groupEl.className = "recipe-hover-card__group";
+
+      const titleEl = document.createElement("h4");
+      titleEl.className = "recipe-hover-card__group-title";
+      titleEl.textContent = clean(sectionTitleEl ? sectionTitleEl.textContent : "Section");
+      groupEl.appendChild(titleEl);
+
+      const listEl = document.createElement(ordered ? "ol" : "ul");
+      listEl.className = ordered
+        ? "recipe-hover-card__list recipe-hover-card__list--ordered"
+        : "recipe-hover-card__list";
+
+      sectionItems.forEach((item) => {
+        const li = document.createElement("li");
+
+        if (ordered) {
+          const stepTitleEl = item.querySelector('[data-role="step-title"]');
+          const stepInstructionEl = item.querySelector('[data-role="step-instruction"]');
+          const stepTitle = clean(stepTitleEl ? stepTitleEl.textContent : "");
+          const stepInstruction = clean(
+            stepInstructionEl ? stepInstructionEl.textContent : item.textContent
+          );
+
+          if (stepTitle) {
+            const label = document.createElement("span");
+            label.className = "recipe-hover-card__step-label";
+            label.textContent = stepTitle;
+            li.appendChild(label);
+          }
+
+          const text = document.createElement("span");
+          text.className = "recipe-hover-card__step-text";
+          text.textContent = stepInstruction;
+          li.appendChild(text);
+        } else {
+          li.textContent = clean(item.textContent);
+        }
+
+        listEl.appendChild(li);
+      });
+
+      groupEl.appendChild(listEl);
+      target.appendChild(groupEl);
     });
+
+    if (!target.childElementCount) {
+      appendEmptyGroup(target, emptyText);
+    }
   }
 
   function fillPopupContent(card) {
@@ -212,8 +304,14 @@
     timesEl.textContent = times || "Temps non renseignes";
     descriptionEl.textContent =
       description || "Aucune description pour le moment.";
-    fillList(ingredientsEl, ingredientsSource, "Aucun ingredient.");
-    fillList(stepsEl, stepsSource, "Aucune etape.");
+    renderGroupedBlocks(ingredientsEl, ingredientsSource, {
+      ordered: false,
+      emptyText: "Aucun ingredient.",
+    });
+    renderGroupedBlocks(stepsEl, stepsSource, {
+      ordered: true,
+      emptyText: "Aucune etape.",
+    });
   }
 
   function placePopup(card) {
