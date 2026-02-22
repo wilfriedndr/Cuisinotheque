@@ -397,6 +397,121 @@
     return;
   }
 
+  // Recipe detail page: en-tête puis sections en cascade
+  const recipeDetailSection = document.querySelector(".recipe-detail");
+  if (recipeDetailSection) {
+    const detailBack = recipeDetailSection.querySelector(".recipe-detail__back");
+    const detailHero = recipeDetailSection.querySelector(".recipe-detail__hero");
+    const detailSections = Array.from(
+      recipeDetailSection.querySelectorAll(".recipe-detail__section")
+    );
+    const detailEmpty = recipeDetailSection.querySelector(".recipe-detail__empty-card");
+
+    const detailIntro = compact([detailBack, detailHero]);
+
+    gsap().set(detailIntro, { autoAlpha: 0, y: 12 });
+    gsap().set(detailSections, {
+      autoAlpha: 0,
+      y: 16,
+      scale: 0.985,
+      transformOrigin: "50% 50%",
+    });
+    if (detailEmpty) gsap().set(detailEmpty, { autoAlpha: 0, y: 12 });
+
+    const detailTl = gsap().timeline({ defaults: { ease: "power2.out" } });
+
+    detailTl.to(detailIntro, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.42,
+      stagger: 0.08,
+    });
+
+    if (detailSections.length) {
+      detailTl.to(
+        detailSections,
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.44,
+          stagger: 0.07,
+          ease: "back.out(1.45)",
+        },
+        "-=0.08"
+      );
+    } else if (detailEmpty) {
+      detailTl.to(detailEmpty, { autoAlpha: 1, y: 0, duration: 0.40 }, "-=0.06");
+    }
+
+    detailTl.eventCallback("onComplete", () => {
+      const toClear = compact([...detailIntro, ...detailSections, detailEmpty]);
+      gsap().set(toClear, { clearProps: "opacity,transform,visibility" });
+    });
+
+    return;
+  }
+
+  // Recipe form page: header, cartes principales, actions
+  const recipeFormPage = document.querySelector(".recipe-form-page");
+  if (recipeFormPage) {
+    const formHeader = recipeFormPage.querySelector(".recipe-form-header");
+    const formCards = Array.from(recipeFormPage.querySelectorAll(".recipe-form > .rf-card"));
+    const formActions = recipeFormPage.querySelector(".rf-actions");
+
+    const formIntro = compact([formHeader]);
+    const formTail = compact([formActions]);
+
+    gsap().set(formIntro, { autoAlpha: 0, y: 10 });
+    gsap().set(formCards, {
+      autoAlpha: 0,
+      y: 16,
+      scale: 0.985,
+      transformOrigin: "50% 50%",
+    });
+    gsap().set(formTail, { autoAlpha: 0, y: 10 });
+
+    const formTl = gsap().timeline({ defaults: { ease: "power2.out" } });
+
+    formTl.to(formIntro, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.40,
+    });
+
+    if (formCards.length) {
+      formTl.to(
+        formCards,
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.42,
+          stagger: 0.08,
+          ease: "back.out(1.45)",
+        },
+        "-=0.04"
+      );
+    }
+
+    formTl.to(
+      formTail,
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.36,
+      },
+      "-=0.08"
+    );
+
+    formTl.eventCallback("onComplete", () => {
+      const toClear = compact([...formIntro, ...formCards, ...formTail]);
+      gsap().set(toClear, { clearProps: "opacity,transform,visibility" });
+    });
+
+    return;
+  }
+
   const t = {
     heroLeft: qAnim("hero-left"),
     heroRight: qAnim("hero-right"),
