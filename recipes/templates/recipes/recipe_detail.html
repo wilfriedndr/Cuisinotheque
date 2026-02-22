@@ -1,67 +1,121 @@
-{% extends "recipes/base.html" %} {% block content %}
-<div class="container recipe-detail">
-  <a class="recipe-detail__back" href="{% url 'recipe_list' %}">← Retour</a>
+{% extends "recipes/base.html" %}
+{% load static %}
+{% block title %}{{ recipe.title }} | Cuisinothèque{% endblock %}
+{% block content %}
+<section
+  class="container recipe-detail"
+  aria-labelledby="recipe-detail-title"
+  data-recipe-detail
+>
+  <a class="recipe-detail__back" href="{% url 'recipe_list' %}">
+    <span aria-hidden="true">←</span>
+    Retour aux recettes
+  </a>
 
-  <div class="recipe-detail__header">
-    <h1 class="recipe-detail__title">{{ recipe.title }}</h1>
+  <header class="recipe-detail__hero">
+    <p class="recipe-detail__eyebrow">Fiche recette</p>
+    <h1 class="recipe-detail__title" id="recipe-detail-title">{{ recipe.title }}</h1>
 
-    <div class="recipe-detail__meta">
+    <div class="recipe-detail__meta" role="list" aria-label="Informations recette">
       {% if recipe.profile %}
-      <span class="pill">{{ recipe.profile }}</span>
-      {% endif %} {% if recipe.prep_time %}
-      <span class="pill">Prépa: {{ recipe.prep_time }}</span>
-      {% endif %} {% if recipe.cook_time %}
-      <span class="pill">Cuisson: {{ recipe.cook_time }}</span>
-      {% endif %} {% if recipe.rest_time %}
-      <span class="pill">Repos: {{ recipe.rest_time }}</span>
+      <span class="recipe-detail__meta-chip" role="listitem">{{ recipe.profile }}</span>
+      {% endif %}
+      {% if recipe.prep_time %}
+      <span class="recipe-detail__meta-chip" role="listitem">Prépa: {{ recipe.prep_time }}</span>
+      {% endif %}
+      {% if recipe.cook_time %}
+      <span class="recipe-detail__meta-chip" role="listitem">Cuisson: {{ recipe.cook_time }}</span>
+      {% endif %}
+      {% if recipe.rest_time %}
+      <span class="recipe-detail__meta-chip" role="listitem">Repos: {{ recipe.rest_time }}</span>
       {% endif %}
     </div>
 
     {% if recipe.description %}
-    <p class="recipe-detail__desc">{{ recipe.description }}</p>
+    <p class="recipe-detail__desc">{{ recipe.description|linebreaksbr }}</p>
+    {% else %}
+    <p class="recipe-detail__desc recipe-detail__desc--empty">
+      Ajoutez une description pour contextualiser rapidement cette recette.
+    </p>
     {% endif %}
-  </div>
+  </header>
 
-  {% for section in sections %}
-  <div class="recipe-detail__section">
-    <h2 class="recipe-detail__section-title">{{ section.title }}</h2>
+  {% if sections %}
+  <div class="recipe-detail__sections">
+    {% for section in sections %}
+    <article
+      class="recipe-detail__section"
+      data-section-card
+    >
+      <header class="recipe-detail__section-head">
+        <h2 class="recipe-detail__section-title">{{ section.title }}</h2>
+        <button
+          class="recipe-detail__section-toggle"
+          type="button"
+          data-section-toggle
+          aria-expanded="true"
+          aria-controls="section-body-{{ forloop.counter }}"
+        >
+          <span data-role="toggle-label">Réduire</span>
+        </button>
+      </header>
 
-    <div class="recipe-detail__cols">
-      <div>
-        <h3>Ingrédients</h3>
+      <div class="recipe-detail__section-body" id="section-body-{{ forloop.counter }}">
+        <section class="recipe-detail__block">
+          <h3 class="recipe-detail__block-title">Ingrédients</h3>
 
-        {% if section.ingredients.all %}
-        <ul class="recipe-detail__list">
-          {% for ing in section.ingredients.all %}
-          <li>
-            {% if ing.quantity %}{{ ing.quantity }}{% endif %} {% if ing.unit %}
-            {{ ing.unit }}{% endif %} {{ ing.name }}
-          </li>
-          {% endfor %}
-        </ul>
-        {% else %}
-        <p class="recipe-detail__empty">Aucun ingrédient.</p>
-        {% endif %}
+          {% if section.ingredients.all %}
+          <ul class="recipe-detail__ingredients-list">
+            {% for ing in section.ingredients.all %}
+            <li class="recipe-detail__ingredient-item">
+              {% if ing.quantity %}
+              <span class="recipe-detail__ingredient-qty">{{ ing.quantity|floatformat:"-2" }}</span>
+              {% endif %}
+              {% if ing.unit %}
+              <span class="recipe-detail__ingredient-unit">{{ ing.unit }}</span>
+              {% endif %}
+              <span>{{ ing.name }}</span>
+              {% if ing.note %}
+              <span class="recipe-detail__ingredient-note">({{ ing.note }})</span>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="recipe-detail__empty">Aucun ingrédient dans cette section.</p>
+          {% endif %}
+        </section>
+
+        <section class="recipe-detail__block">
+          <h3 class="recipe-detail__block-title">Étapes</h3>
+
+          {% if section.steps.all %}
+          <ol class="recipe-detail__steps-list">
+            {% for st in section.steps.all %}
+            <li class="recipe-detail__step-item">
+              {% if st.title %}
+              <p class="recipe-detail__step-title">{{ st.title }}</p>
+              {% endif %}
+              <p class="recipe-detail__step-instruction">{{ st.instruction|linebreaksbr }}</p>
+            </li>
+            {% endfor %}
+          </ol>
+          {% else %}
+          <p class="recipe-detail__empty">Aucune étape dans cette section.</p>
+          {% endif %}
+        </section>
       </div>
-
-      <div>
-        <h3>Étapes</h3>
-
-        {% if section.steps.all %}
-        <ol class="recipe-detail__list">
-          {% for st in section.steps.all %}
-          <li>
-            {% if st.title %}<strong>{{ st.title }}</strong><br />{% endif %}
-            <span>{{ st.instruction|linebreaksbr }}</span>
-          </li>
-          {% endfor %}
-        </ol>
-        {% else %}
-        <p class="recipe-detail__empty">Aucune étape.</p>
-        {% endif %}
-      </div>
-    </div>
+    </article>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
+  {% else %}
+  <article class="recipe-detail__empty-card">
+    <h2 class="recipe-detail__empty-title">Aucune section disponible</h2>
+    <p class="recipe-detail__empty-text">
+      Cette recette n'a pas encore de sections, ingrédients ni étapes.
+    </p>
+  </article>
+  {% endif %}
+</section>
+<script src="{% static 'recipes/js/recipe_detail.js' %}"></script>
 {% endblock %}
