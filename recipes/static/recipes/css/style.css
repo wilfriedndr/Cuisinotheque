@@ -585,6 +585,21 @@ html.theme-switching .visual-caption {
     grid-template-columns: 1fr;
   }
 
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-cta .btn {
+    width: min(100%, 240px);
+    padding: 10px 14px;
+    font-size: clamp(13px, 2.8vw, 16px);
+    white-space: nowrap;
+  }
+
   .hero-visual {
     order: -1;
     min-height: 260px;
@@ -607,5 +622,11 @@ html.theme-switching .visual-caption {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+}
+
+@media (max-width: 430px) {
+  .hero-cta .btn {
+    white-space: normal;
   }
 }
