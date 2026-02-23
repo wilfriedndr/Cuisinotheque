@@ -1,15 +1,36 @@
-# Licence
+# Cuisinothèque License
 
-**Cuisinothèque** – par wilfriedndr
+Copyright (c) 2025 Wilfried Niederhoffer
 
-Cette œuvre est mise à disposition selon les termes de la licence Creative Commons Attribution - Pas d’utilisation commerciale 4.0 International.
+This software is licensed under the PolyForm Noncommercial License 1.0.0.
 
-Vous pouvez :
-- Partager — copier, distribuer et communiquer le matériel par tous moyens et sous tous formats
-- Adapter — remixer, transformer et créer à partir du matériel
+You may obtain a copy of the license at:
 
-À condition de :
-- Créditer l’auteur original
-- Ne pas en faire un usage commercial
+https://polyformproject.org/licenses/noncommercial/1.0.0/
 
-Texte complet : https://creativecommons.org/licenses/by-nc/4.0/
+------------------------------------------------------------
+
+Summary (non legally binding):
+
+You are free to:
+
+- Use the software
+- Copy and distribute the software
+- Modify the software
+- Create derivative works
+
+Under the following conditions:
+
+1. Attribution  
+   You must give appropriate credit to the original author:
+   Wilfried Niederhoffer.
+
+2. Noncommercial Use Only  
+   You may not use this software for commercial purposes.
+   Commercial use requires explicit written permission
+   from the copyright holder.
+
+------------------------------------------------------------
+
+For full legal terms, refer to the official PolyForm
+Noncommercial 1.0.0 license text.
