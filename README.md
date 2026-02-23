@@ -160,7 +160,7 @@ Ce projet est aussi un **terrain d’expérimentation** pour :
 
 ## 📝 Licence
 
-Ce projet est distribué sous licence **Creative Commons Attribution - Pas d’utilisation commerciale 4.0 International**.
+Ce projet est distribué sous licence **Licensed under PolyForm Noncommercial 1.0.0 Commercial use is strictly prohibited.**.
 
 📄 Voir le fichier [LICENSE.md](LICENSE.md)  
-🔗 [Lire la licence complète](https://creativecommons.org/licenses/by-nc/4.0/)
+🔗 [Lire la licence complète](https://polyformproject.org/licenses/noncommercial/1.0.0/)
