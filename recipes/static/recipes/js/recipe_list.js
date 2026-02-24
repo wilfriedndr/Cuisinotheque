@@ -54,6 +54,10 @@
 
     setSelectedValue(nativeSelect.value || "", false);
 
+    nativeSelect.addEventListener("change", () => {
+      setSelectedValue(nativeSelect.value || "", false);
+    });
+
     trigger.addEventListener("click", () => {
       if (isMenuOpen()) closeMenu();
       else openMenu();
@@ -540,6 +544,22 @@
       event.preventDefault();
       applyFilters();
     });
+
+    if (resetLink) {
+      resetLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        searchInput.value = "";
+
+        if (profileInput.value !== "") {
+          profileInput.value = "";
+          profileInput.dispatchEvent(new Event("change", { bubbles: true }));
+        } else {
+          applyFilters();
+        }
+
+        searchInput.focus();
+      });
+    }
 
     applyFilters();
   }

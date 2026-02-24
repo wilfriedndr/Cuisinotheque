@@ -512,6 +512,65 @@
     return;
   }
 
+  // Recipe dashboard page: en-tête puis lignes de recettes
+  const recipeDashboardPage = document.querySelector(".recipe-dashboard");
+  if (recipeDashboardPage) {
+    const dashboardHeader = recipeDashboardPage.querySelector(".recipe-dashboard__header");
+    const dashboardSearch = recipeDashboardPage.querySelector(".recipe-list__search");
+    const dashboardRows = Array.from(
+      recipeDashboardPage.querySelectorAll(".recipe-dashboard__row:not(.recipe-dashboard__row--head)")
+    );
+    const dashboardHeadRow = recipeDashboardPage.querySelector(".recipe-dashboard__row--head");
+    const dashboardEmpty = recipeDashboardPage.querySelector(".recipe-dashboard__empty");
+
+    const dashboardIntro = compact([dashboardHeader, dashboardSearch, dashboardHeadRow]);
+
+    gsap().set(dashboardIntro, { autoAlpha: 0, y: 10 });
+    gsap().set(dashboardRows, {
+      autoAlpha: 0,
+      y: 14,
+      scale: 0.992,
+      transformOrigin: "50% 50%",
+    });
+    if (dashboardEmpty) gsap().set(dashboardEmpty, { autoAlpha: 0, y: 12 });
+
+    const dashboardTl = gsap().timeline({ defaults: { ease: "power2.out" } });
+
+    dashboardTl.to(dashboardIntro, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.40,
+      stagger: 0.06,
+    });
+
+    if (dashboardRows.length) {
+      dashboardTl.to(
+        dashboardRows,
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.36,
+          stagger: 0.04,
+        },
+        "-=0.05"
+      );
+    } else if (dashboardEmpty) {
+      dashboardTl.to(dashboardEmpty, { autoAlpha: 1, y: 0, duration: 0.38 }, "-=0.05");
+    }
+
+    dashboardTl.eventCallback("onComplete", () => {
+      const toClear = compact([
+        ...dashboardIntro,
+        ...dashboardRows,
+        dashboardEmpty,
+      ]);
+      gsap().set(toClear, { clearProps: "opacity,transform,visibility" });
+    });
+
+    return;
+  }
+
   const t = {
     heroLeft: qAnim("hero-left"),
     heroRight: qAnim("hero-right"),

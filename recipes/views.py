@@ -184,4 +184,33 @@ def recipe_delete(request, pk):
 
 
 def dashboard(request):
-    return render(request, "recipes/dashboard.html")
+    q = (request.GET.get("q") or "").strip()
+    profile = (request.GET.get("profile") or "").strip()
+
+    recipes = Recipe.objects.all()
+    if q:
+        recipes = recipes.filter(
+            Q(title__icontains=q) | Q(profile__icontains=q)
+        )
+    if profile:
+        recipes = recipes.filter(profile=profile)
+
+    recipes = recipes.order_by("-id")
+    profiles = (
+        Recipe.objects.exclude(profile__isnull=True)
+        .exclude(profile="")
+        .values_list("profile", flat=True)
+        .distinct()
+        .order_by("profile")
+    )
+
+    return render(
+        request,
+        "recipes/recipe_dashboard.html",
+        {
+            "recipes": recipes,
+            "q": q,
+            "profile": profile,
+            "profiles": profiles,
+        },
+    )

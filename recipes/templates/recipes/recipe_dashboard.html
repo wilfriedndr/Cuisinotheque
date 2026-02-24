@@ -1,0 +1,151 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+{% block title %}Dashboard | Cuisinothèque{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recipe_dashboard.css' %}" />
+{% endblock %}
+{% block content %}
+<section class="container recipe-dashboard" data-dashboard-root>
+  <header class="recipe-dashboard__header">
+    <h1 class="recipe-dashboard__title">Tableau de bord</h1>
+    <p class="recipe-dashboard__subtitle">
+      Gestion simple des recettes: une ligne par recette avec accès rapide aux actions.
+    </p>
+    <p class="recipe-dashboard__count" data-role="recipe-count">
+      {% with total=recipes|length %}
+        {% if q or profile %}
+          {{ total }} recette{% if total > 1 %}s{% endif %} trouvee{% if total > 1 %}s{% endif %}.
+        {% else %}
+          {{ total }} recette{% if total > 1 %}s{% endif %} dans le dashboard.
+        {% endif %}
+      {% endwith %}
+    </p>
+  </header>
+
+  <form method="get" class="recipe-list__search" role="search" autocomplete="off">
+    <input
+      id="dashboard-search-input"
+      class="recipe-list__search-input"
+      type="text"
+      name="q"
+      value="{{ q }}"
+      placeholder="Rechercher par titre ou profil..."
+      aria-label="Rechercher une recette par son titre ou son profil"
+    />
+    <div class="recipe-list__filter-wrap">
+      <label id="dashboard-profile-label" for="dashboard-profile-select-native" class="recipe-list__filter-label">Profil</label>
+      <div class="recipe-select" data-dashboard-profile-select>
+        <select
+          id="dashboard-profile-select-native"
+          class="recipe-list__search-select-native"
+          name="profile"
+          aria-label="Filtrer par profil"
+        >
+          <option value="">Tous les profils</option>
+          {% for p in profiles %}
+            <option value="{{ p }}" {% if p == profile %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+
+        <button
+          type="button"
+          class="recipe-select__trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-controls="dashboardProfileMenu"
+        >
+          <span class="recipe-select__trigger-text" data-role="selected-label">
+            {% if profile %}{{ profile }}{% else %}Tous les profils{% endif %}
+          </span>
+          <span class="recipe-select__trigger-icon" aria-hidden="true"></span>
+        </button>
+
+        <ul class="recipe-select__menu" id="dashboardProfileMenu" role="listbox" aria-labelledby="dashboard-profile-label">
+          <li>
+            <button type="button" class="recipe-select__option{% if not profile %} is-selected{% endif %}" data-value="">
+              Tous les profils
+            </button>
+          </li>
+          {% for p in profiles %}
+            <li>
+              <button type="button" class="recipe-select__option{% if p == profile %} is-selected{% endif %}" data-value="{{ p }}">
+                {{ p }}
+              </button>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <a class="recipe-list__reset" href="{% url 'dashboard' %}" {% if not q and not profile %}hidden{% endif %}>
+      Reinitialiser
+    </a>
+  </form>
+
+  <div class="recipe-dashboard__list" role="list" aria-label="Liste des recettes" {% if not recipes %}hidden{% endif %}>
+    <article class="recipe-dashboard__row recipe-dashboard__row--head" aria-hidden="true">
+      <p class="recipe-dashboard__col recipe-dashboard__col--title">Recette</p>
+      <p class="recipe-dashboard__col recipe-dashboard__col--profile">Profil</p>
+      <p class="recipe-dashboard__col recipe-dashboard__col--description">Description</p>
+      <p class="recipe-dashboard__col recipe-dashboard__col--actions">Actions</p>
+    </article>
+
+    {% for recipe in recipes %}
+    <article
+      class="recipe-dashboard__row"
+      role="listitem"
+      data-dashboard-row
+      data-recipe-title="{{ recipe.title }}"
+      data-recipe-profile="{{ recipe.profile|default_if_none:'' }}"
+    >
+      <div class="recipe-dashboard__col recipe-dashboard__col--title">
+        <p class="recipe-dashboard__value recipe-dashboard__value--title">{{ recipe.title }}</p>
+      </div>
+
+      <div class="recipe-dashboard__col recipe-dashboard__col--profile">
+        <p class="recipe-dashboard__value">
+          {% if recipe.profile %}
+          {{ recipe.profile }}
+          {% else %}
+          <span class="recipe-dashboard__muted">Non renseigné</span>
+          {% endif %}
+        </p>
+      </div>
+
+      <div class="recipe-dashboard__col recipe-dashboard__col--description">
+        <p class="recipe-dashboard__value recipe-dashboard__description">
+          {% if recipe.description %}
+          {{ recipe.description|striptags|truncatechars:220 }}
+          {% else %}
+          <span class="recipe-dashboard__muted">Aucune description</span>
+          {% endif %}
+        </p>
+      </div>
+
+      <div class="recipe-dashboard__col recipe-dashboard__col--actions">
+        <div class="recipe-dashboard__actions">
+          <a class="recipe-dashboard__action recipe-dashboard__action--edit" href="{% url 'recipe_update' recipe.pk %}">
+            Modifier
+          </a>
+          <a class="recipe-dashboard__action recipe-dashboard__action--delete" href="{% url 'recipe_delete' recipe.pk %}">
+            Supprimer
+          </a>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <article class="recipe-dashboard__empty" {% if recipes %}hidden{% endif %}>
+    <h2 class="recipe-dashboard__empty-title">Aucune recette trouvée</h2>
+    <p class="recipe-dashboard__empty-text" data-role="dashboard-empty-text">
+      {% if q or profile %}
+        Aucun résultat ne correspond aux filtres actuels.
+      {% else %}
+        Ajoutez une recette pour commencer à remplir votre tableau de bord.
+      {% endif %}
+    </p>
+    <a class="recipe-dashboard__empty-cta" href="{% url 'recipe_create' %}">Ajouter une recette</a>
+  </article>
+</section>
+<script src="{% static 'recipes/js/recipe_dashboard.js' %}"></script>
+{% endblock %}
