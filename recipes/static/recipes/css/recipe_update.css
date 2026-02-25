@@ -1,0 +1,22 @@
+.recipe-update-page {
+  padding-block: 28px 44px;
+}
+
+.recipe-update-header {
+  margin-bottom: 18px;
+}
+
+.recipe-update-page .recipe-form-title {
+  margin-bottom: 6px;
+}
+
+.recipe-update-page .rf-actions .btn-primary {
+  min-width: 230px;
+}
+
+@media (max-width: 760px) {
+  .recipe-update-page .rf-actions .btn-primary,
+  .recipe-update-page .rf-actions .rf-cancel {
+    width: 100%;
+  }
+}

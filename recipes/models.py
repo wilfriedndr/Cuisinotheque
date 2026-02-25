@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from typing import TYPE_CHECKING
 
 
 # This Python class defines a Recipe model with fields for title, profile, description, cook time,
@@ -35,6 +36,10 @@ class RecipeSection(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="sections")
     title = models.CharField(max_length=120)
     order = models.PositiveIntegerField(default=1)
+
+    if TYPE_CHECKING:
+        ingredients: models.Manager["IngredientItem"]
+        steps: models.Manager["Step"]
 
     class Meta:
         ordering = ["order", "id"]

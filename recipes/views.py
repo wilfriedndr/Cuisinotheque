@@ -175,12 +175,173 @@ def recipe_create(request):
     # Redirect to created recipe detail page
     return redirect("recipe_detail", pk=recipe.pk)
 
+
+def _quantity_to_text(value):
+    if value is None:
+        return ""
+    text = format(value, "f")
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    return text
+
+
+def _build_initial_payload(recipe):
+    sections_qs = (
+        RecipeSection.objects.filter(recipe=recipe)
+        .prefetch_related("ingredients", "steps")
+        .order_by("order", "id")
+    )
+    payload_sections = []
+
+    for section in sections_qs:
+        ingredients = [
+            {
+                "name": ing.name or "",
+                "quantity": _quantity_to_text(ing.quantity),
+                "unit": ing.unit or "",
+            }
+            for ing in section.ingredients.all()
+        ]
+        steps = [
+            {
+                "text": st.instruction or "",
+            }
+            for st in section.steps.all()
+        ]
+
+        payload_sections.append(
+            {
+                "name": section.title or "",
+                "ingredients": ingredients,
+                "steps": steps,
+            }
+        )
+
+    return {"sections": payload_sections}
+
+
+@require_http_methods(["GET", "POST"])
 def recipe_update(request, pk):
-    return render(request, "recipes/recipe_form.html", {"pk": pk})
+    recipe = get_object_or_404(Recipe, pk=pk)
+
+    if request.method == "GET":
+        return render(
+            request,
+            "recipes/recipe_update.html",
+            {
+                "recipe": recipe,
+                "initial_payload": _build_initial_payload(recipe),
+            },
+        )
+
+    title = (request.POST.get("title") or "").strip()
+    profile = (request.POST.get("profile") or "").strip()
+    description = (request.POST.get("description") or "").strip()
+    prep_time = (request.POST.get("prep_time") or "").strip()
+    cook_time = (request.POST.get("cook_time") or "").strip()
+    rest_time = (request.POST.get("rest_time") or "").strip()
+
+    if not title or not profile:
+        return JsonResponse(
+            {"ok": False, "error": "Titre et Profil sont obligatoires."}, status=400
+        )
+
+    payload_raw = request.POST.get("payload") or "{}"
+    try:
+        payload = json.loads(payload_raw)
+    except json.JSONDecodeError:
+        return JsonResponse(
+            {"ok": False, "error": "Payload JSON invalide."}, status=400
+        )
+
+    sections = payload.get("sections", [])
+    if not isinstance(sections, list) or len(sections) == 0:
+        return JsonResponse(
+            {"ok": False, "error": "Ajoute au moins une section."}, status=400
+        )
+
+    recipe.title = title
+    recipe.profile = profile
+    recipe.description = description
+    recipe.prep_time = prep_time
+    recipe.cook_time = cook_time
+    recipe.rest_time = rest_time
+    recipe.save()
+
+    RecipeSection.objects.filter(recipe=recipe).delete()
+
+    for s_idx, section_data in enumerate(sections, start=1):
+        section_title = (
+            section_data.get("title") or section_data.get("name") or ""
+        ).strip() or f"Section {s_idx}"
+
+        section = RecipeSection.objects.create(
+            recipe=recipe,
+            title=section_title,
+            order=s_idx,
+        )
+
+        ingredients = section_data.get("ingredients", [])
+        if isinstance(ingredients, list):
+            for i_idx, ing in enumerate(ingredients, start=1):
+                ing_name = (ing.get("name") or "").strip()
+                if not ing_name:
+                    continue
+
+                qty_raw = (ing.get("quantity") or "").strip()
+                unit = (ing.get("unit") or "").strip()
+
+                quantity = None
+                if qty_raw:
+                    try:
+                        quantity = Decimal(qty_raw.replace(",", "."))
+                    except (InvalidOperation, ValueError):
+                        quantity = None
+
+                IngredientItem.objects.create(
+                    section=section,
+                    name=ing_name,
+                    quantity=quantity,
+                    unit=unit,
+                    order=i_idx,
+                )
+
+        steps = section_data.get("steps", [])
+        if isinstance(steps, list):
+            for st_idx, step in enumerate(steps, start=1):
+                instruction = (
+                    step.get("instruction") or step.get("text") or ""
+                ).strip()
+                if not instruction:
+                    continue
+
+                step_title = (step.get("title") or "").strip()
+
+                Step.objects.create(
+                    section=section,
+                    title=step_title,
+                    instruction=instruction,
+                    order=st_idx,
+                )
+
+    return redirect("dashboard")
 
 
+@require_http_methods(["GET", "POST"])
 def recipe_delete(request, pk):
-    return render(request, "recipes/recipe_confirm_delete.html", {"pk": pk})
+    recipe = get_object_or_404(Recipe, pk=pk)
+
+    if request.method == "POST":
+        recipe.delete()
+        return redirect("dashboard")
+
+    return render(
+        request,
+        "recipes/recipe_confirm_delete.html",
+        {
+            "recipe": recipe,
+        },
+    )
 
 
 def dashboard(request):

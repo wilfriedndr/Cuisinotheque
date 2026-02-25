@@ -267,7 +267,6 @@
 .recipe-card:hover {
   transform: translateY(-2px);
   border-color: color-mix(in srgb, var(--secondary) 34%, var(--border));
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--secondary) 14%, transparent);
 }
 
 .recipe-card:focus-visible {
@@ -333,9 +332,6 @@
   border-radius: 16px;
   background: #1f2732;
   padding: 16px 18px 18px;
-  box-shadow:
-    0 20px 40px color-mix(in srgb, #000000 22%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--secondary) 8%, transparent) inset;
   pointer-events: auto;
   max-height: min(60vh, 500px);
   overflow-y: auto;

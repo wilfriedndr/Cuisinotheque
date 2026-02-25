@@ -3,6 +3,7 @@
 {% block title %}Dashboard | Cuisinothèque{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'recipes/css/recipe_dashboard.css' %}" />
+<link rel="stylesheet" href="{% static 'recipes/css/recipe_confirm_delete.css' %}" />
 {% endblock %}
 {% block content %}
 <section class="container recipe-dashboard" data-dashboard-root>
@@ -83,9 +84,9 @@
 
   <div class="recipe-dashboard__list" role="list" aria-label="Liste des recettes" {% if not recipes %}hidden{% endif %}>
     <article class="recipe-dashboard__row recipe-dashboard__row--head" aria-hidden="true">
-      <p class="recipe-dashboard__col recipe-dashboard__col--title">Recette</p>
-      <p class="recipe-dashboard__col recipe-dashboard__col--profile">Profil</p>
-      <p class="recipe-dashboard__col recipe-dashboard__col--description">Description</p>
+      <p class="recipe-dashboard__col">Recette</p>
+      <p class="recipe-dashboard__col">Profil</p>
+      <p class="recipe-dashboard__col">Description</p>
       <p class="recipe-dashboard__col recipe-dashboard__col--actions">Actions</p>
     </article>
 
@@ -96,12 +97,13 @@
       data-dashboard-row
       data-recipe-title="{{ recipe.title }}"
       data-recipe-profile="{{ recipe.profile|default_if_none:'' }}"
+      data-recipe-description="{% if recipe.description %}{{ recipe.description|striptags|truncatechars:180 }}{% endif %}"
     >
-      <div class="recipe-dashboard__col recipe-dashboard__col--title">
+      <div class="recipe-dashboard__col">
         <p class="recipe-dashboard__value recipe-dashboard__value--title">{{ recipe.title }}</p>
       </div>
 
-      <div class="recipe-dashboard__col recipe-dashboard__col--profile">
+      <div class="recipe-dashboard__col">
         <p class="recipe-dashboard__value">
           {% if recipe.profile %}
           {{ recipe.profile }}
@@ -111,7 +113,7 @@
         </p>
       </div>
 
-      <div class="recipe-dashboard__col recipe-dashboard__col--description">
+      <div class="recipe-dashboard__col">
         <p class="recipe-dashboard__value recipe-dashboard__description">
           {% if recipe.description %}
           {{ recipe.description|striptags|truncatechars:220 }}
@@ -146,6 +148,53 @@
     </p>
     <a class="recipe-dashboard__empty-cta" href="{% url 'recipe_create' %}">Ajouter une recette</a>
   </article>
+
+  <div class="recipe-delete-modal" id="recipeDeleteModal" hidden aria-hidden="true">
+    <button
+      type="button"
+      class="recipe-delete-modal__backdrop"
+      data-role="delete-backdrop"
+      aria-label="Fermer la confirmation de suppression"
+    ></button>
+    <div
+      class="recipe-delete-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="recipeDeleteModalTitle"
+    >
+      <h2 class="recipe-delete-modal__title" id="recipeDeleteModalTitle">
+        Confirmer la suppression
+      </h2>
+      <p class="recipe-delete-modal__text">
+        Vous allez supprimer cette recette:
+      </p>
+      <ul class="recipe-delete-modal__summary">
+        <li>
+          <span class="recipe-delete-modal__label">Recette</span>
+          <span data-role="delete-title"></span>
+        </li>
+        <li>
+          <span class="recipe-delete-modal__label">Profil</span>
+          <span data-role="delete-profile"></span>
+        </li>
+        <li>
+          <span class="recipe-delete-modal__label">Description</span>
+          <span data-role="delete-description"></span>
+        </li>
+      </ul>
+
+      <form method="post" action="" data-role="delete-form" class="recipe-delete-modal__actions">
+        {% csrf_token %}
+        <button type="button" class="recipe-delete-modal__cancel" data-role="delete-cancel">
+          Annuler
+        </button>
+        <button type="submit" class="recipe-delete-modal__confirm">
+          Supprimer
+        </button>
+      </form>
+    </div>
+  </div>
 </section>
 <script src="{% static 'recipes/js/recipe_dashboard.js' %}"></script>
+<script src="{% static 'recipes/js/recipe_confirm_delete.js' %}"></script>
 {% endblock %}

@@ -30,7 +30,6 @@
   border-radius: 20px;
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   padding: clamp(16px, 3vw, 26px);
-  box-shadow: 0 10px 28px color-mix(in srgb, #000000 12%, transparent);
   display: grid;
   gap: 12px;
 }

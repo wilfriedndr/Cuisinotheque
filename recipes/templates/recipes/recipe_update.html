@@ -1,0 +1,119 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+{% block title %}Modifier {{ recipe.title }} | Cuisinothèque{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recipe_update.css' %}" />
+{% endblock %}
+{% block content %}
+<section class="container recipe-form-page recipe-update-page">
+  <header class="recipe-form-header recipe-update-header">
+    <div>
+      <h1 class="recipe-form-title">Modifier la recette</h1>
+      <p class="recipe-form-subtitle">
+        Mettez à jour les informations, sections, ingrédients et étapes de cette recette.
+      </p>
+    </div>
+  </header>
+
+  <form
+    id="recipeUpdateForm"
+    class="recipe-form"
+    method="post"
+    enctype="multipart/form-data"
+    novalidate
+    autocomplete="off"
+  >
+    {% csrf_token %}
+
+    <div class="card rf-card rf-card--infos">
+      <h2 class="rf-card-title">Infos</h2>
+
+      <div class="rf-grid">
+        <div class="rf-field">
+          <label for="title">Titre *</label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            placeholder="ex: Tiramisu"
+            required
+            value="{{ recipe.title }}"
+          />
+        </div>
+
+        <div class="rf-field">
+          <label for="profile">Profil *</label>
+          <input
+            id="profile"
+            name="profile"
+            type="text"
+            placeholder="Pour qui et/ou par qui cette recette est conçue ?"
+            required
+            value="{{ recipe.profile }}"
+          />
+        </div>
+
+        <div class="rf-field rf-field--full">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="Une note, une origine, un conseil…"
+          >{{ recipe.description }}</textarea>
+        </div>
+      </div>
+
+      <div class="rf-grid rf-grid--times">
+        <div class="rf-field">
+          <label>Préparation</label>
+          <input
+            name="prep_time"
+            type="text"
+            placeholder="ex: 20 min / 1h30 / la veille"
+            value="{{ recipe.prep_time }}"
+          />
+        </div>
+        <div class="rf-field">
+          <label>Cuisson</label>
+          <input
+            name="cook_time"
+            type="text"
+            placeholder="ex: 30 min / jusqu'à doré"
+            value="{{ recipe.cook_time }}"
+          />
+        </div>
+        <div class="rf-field">
+          <label>Repos</label>
+          <input
+            name="rest_time"
+            type="text"
+            placeholder="ex: 2 h / une nuit"
+            value="{{ recipe.rest_time }}"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="card rf-card rf-card--sections">
+      <div class="rf-sections-head">
+        <h2 class="rf-card-title">Sections</h2>
+        <button id="addUpdateSectionBtn" type="button" class="btn btn-primary">
+          + Ajouter une section
+        </button>
+      </div>
+
+      <div id="updateSectionsRoot" class="rf-sections-root"></div>
+    </div>
+
+    <input type="hidden" id="updateRecipePayload" name="payload" value="{}" />
+
+    <div class="rf-actions">
+      <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+      <a class="btn btn-ghost rf-cancel" href="{% url 'dashboard' %}">Annuler</a>
+    </div>
+  </form>
+</section>
+{{ initial_payload|json_script:"recipe-update-initial" }}
+<script src="{% static 'recipes/js/recipe_update.js' %}"></script>
+{% endblock %}

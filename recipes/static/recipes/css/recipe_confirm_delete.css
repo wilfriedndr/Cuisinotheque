@@ -1,0 +1,211 @@
+.recipe-delete-modal[hidden] {
+  display: none !important;
+}
+
+.recipe-delete-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+}
+
+.recipe-delete-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: color-mix(in srgb, #000000 34%, transparent);
+  cursor: pointer;
+}
+
+.theme-light .recipe-delete-modal__backdrop {
+  background: color-mix(in srgb, #000000 24%, transparent);
+}
+
+.recipe-delete-modal__panel {
+  position: relative;
+  width: min(560px, calc(100vw - 24px));
+  margin: min(12vh, 92px) auto 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 18px;
+}
+
+.theme-light .recipe-delete-modal__panel {
+  background: var(--surface-2);
+}
+
+.recipe-delete-modal__title {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 2.2vw, 28px);
+}
+
+.recipe-delete-modal__text {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+
+.recipe-delete-modal__summary {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.recipe-delete-modal__summary li {
+  display: grid;
+  gap: 2px;
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-2) 66%, transparent);
+  padding: 9px 10px;
+  line-height: 1.42;
+  overflow-wrap: anywhere;
+}
+
+.theme-light .recipe-delete-modal__summary li {
+  background: #f0ece6;
+}
+
+.recipe-delete-modal__label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.recipe-delete-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recipe-delete-modal__cancel,
+.recipe-delete-modal__confirm {
+  min-height: 38px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 0 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.recipe-delete-modal__cancel {
+  background: #f4f4f4;
+  border-color: #b9bdc4;
+  color: #2c3035;
+}
+
+.recipe-delete-modal__cancel:hover {
+  background: #c7ced7;
+  border-color: #c7ced7;
+}
+
+.recipe-delete-modal__confirm {
+  background: #b7c1cf;
+  border-color: #e7ecf3;
+  color: #2c3035;
+}
+
+.recipe-delete-modal__confirm:hover {
+  background: #e7ecf3;
+  border-color: #e7ecf3;
+}
+
+.theme-light .recipe-delete-modal__confirm {
+  background: #d5dbe4;
+  border-color: #b3bac4;
+}
+
+.theme-light .recipe-delete-modal__confirm:hover {
+  background: #b3bac4;
+  border-color: #b3bac4;
+}
+
+.recipe-delete-page {
+  padding: 28px 0 44px;
+}
+
+.recipe-delete-page__card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  padding: 20px;
+  width: min(760px, 100%);
+}
+
+.theme-light .recipe-delete-page__card {
+  background: var(--surface-2);
+}
+
+.recipe-delete-page__title {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 3vw, 40px);
+}
+
+.recipe-delete-page__text {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.recipe-delete-page__summary {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.recipe-delete-page__summary li {
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-2) 66%, transparent);
+  padding: 9px 10px;
+  display: grid;
+  gap: 2px;
+}
+
+.recipe-delete-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.recipe-delete-page__cancel,
+.recipe-delete-page__confirm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.recipe-delete-page__cancel {
+  background: #f4f4f4;
+  border-color: #b9bdc4;
+  color: #2c3035;
+}
+
+.recipe-delete-page__confirm {
+  background: #b7c1cf;
+  border-color: #e7ecf3;
+  color: #2c3035;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .recipe-delete-modal__actions {
+    justify-content: stretch;
+  }
+
+  .recipe-delete-modal__cancel,
+  .recipe-delete-modal__confirm {
+    width: 100%;
+  }
+}

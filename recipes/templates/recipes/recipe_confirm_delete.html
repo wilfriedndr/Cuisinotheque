@@ -1,11 +1,51 @@
 {% extends "recipes/base.html" %}
+{% load static %}
+{% block title %}Supprimer une recette | Cuisinothèque{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recipe_confirm_delete.css' %}" />
+{% endblock %}
 
 {% block content %}
-<h1>Supprimer une recette</h1>
-<p>Êtes-vous sûr de vouloir supprimer cette recette ?</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Oui, supprimer</button>
-    <a href="{% url 'dashboard' %}">Annuler</a>
-</form>
+<section class="container recipe-delete-page">
+  <article class="recipe-delete-page__card">
+    <h1 class="recipe-delete-page__title">Supprimer une recette</h1>
+    <p class="recipe-delete-page__text">
+      Confirmez la suppression de cette recette. Cette action est definitive.
+    </p>
+
+    <ul class="recipe-delete-page__summary">
+      <li>
+        <span class="recipe-delete-modal__label">Recette</span>
+        <span>{{ recipe.title }}</span>
+      </li>
+      <li>
+        <span class="recipe-delete-modal__label">Profil</span>
+        <span>
+          {% if recipe.profile %}
+            {{ recipe.profile }}
+          {% else %}
+            Non renseigne
+          {% endif %}
+        </span>
+      </li>
+      <li>
+        <span class="recipe-delete-modal__label">Description</span>
+        <span>
+          {% if recipe.description %}
+            {{ recipe.description|striptags|truncatechars:180 }}
+          {% else %}
+            Aucune description.
+          {% endif %}
+        </span>
+      </li>
+    </ul>
+
+    <form method="post" class="recipe-delete-page__actions">
+      {% csrf_token %}
+      <a class="recipe-delete-page__cancel" href="{% url 'dashboard' %}">Annuler</a>
+      <button class="recipe-delete-page__confirm" type="submit">Supprimer</button>
+    </form>
+  </article>
+</section>
+<script src="{% static 'recipes/js/recipe_confirm_delete.js' %}"></script>
 {% endblock %}
