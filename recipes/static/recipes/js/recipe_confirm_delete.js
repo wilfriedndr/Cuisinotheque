@@ -1,6 +1,7 @@
 (() => {
   "use strict";
 
+  // Dashboard delete confirmation modal (populate summary + submit target).
   const dashboardRoot = document.querySelector("[data-dashboard-root]");
   const modal = document.getElementById("recipeDeleteModal");
   if (!dashboardRoot || !modal) return;
@@ -24,6 +25,7 @@
   }
 
   function openModal(trigger) {
+    // Populate modal with row data to confirm user intent before deletion.
     const row = trigger.closest("[data-dashboard-row]");
     if (!row || !form) return;
 
@@ -49,6 +51,7 @@
   }
 
   function closeModal() {
+    // Restore focus to the triggering button for accessible keyboard flow.
     if (modal.hidden) return;
 
     modal.hidden = true;

@@ -1,11 +1,13 @@
+"""Data models for recipes, grouped sections, ingredients and steps."""
+
 from django.db import models
 from django.core.validators import MinValueValidator
 from typing import TYPE_CHECKING
 
 
-# This Python class defines a Recipe model with fields for title, profile, description, cook time,
-# rest time, created and updated timestamps.
 class Recipe(models.Model):
+    """Main recipe entity displayed in list, detail and dashboard views."""
+
     title = models.CharField(max_length=200)
     profile = models.CharField(max_length=80)
     description = models.TextField(blank=True)
@@ -26,8 +28,6 @@ class Recipe(models.Model):
         return self.title
 
 
-# The `RecipeSection` class represents a component/block of a recipe with attributes such as title,
-# order, and a reference to the parent recipe.
 class RecipeSection(models.Model):
     """
     Un "composant" / bloc de recette.
@@ -49,8 +49,6 @@ class RecipeSection(models.Model):
         return f"{self.recipe.title} — {self.title}"
 
 
-# The `IngredientItem` class represents an ingredient attached to a recipe section with attributes for
-# name, quantity, unit, note, and order.
 class IngredientItem(models.Model):
     """
     Un ingrédient rattaché à une section (RecipeSection).
@@ -91,8 +89,6 @@ class IngredientItem(models.Model):
         return f"{qty}{unit}{self.name}{note}"
 
 
-# This Python class defines a model for a step related to a component (section) in a recipe, including
-# title, instruction, order, duration, and temperature fields.
 class Step(models.Model):
     """
     Une étape rattachée à un composant (section).

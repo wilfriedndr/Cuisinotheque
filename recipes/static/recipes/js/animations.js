@@ -516,6 +516,7 @@
   const recipeDashboardPage = document.querySelector(".recipe-dashboard");
   if (recipeDashboardPage) {
     const dashboardHeader = recipeDashboardPage.querySelector(".recipe-dashboard__header");
+    const dashboardImportPanel = recipeDashboardPage.querySelector(".recipe-dashboard__import-panel");
     const dashboardSearch = recipeDashboardPage.querySelector(".recipe-list__search");
     const dashboardRows = Array.from(
       recipeDashboardPage.querySelectorAll(".recipe-dashboard__row:not(.recipe-dashboard__row--head)")
@@ -523,7 +524,12 @@
     const dashboardHeadRow = recipeDashboardPage.querySelector(".recipe-dashboard__row--head");
     const dashboardEmpty = recipeDashboardPage.querySelector(".recipe-dashboard__empty");
 
-    const dashboardIntro = compact([dashboardHeader, dashboardSearch, dashboardHeadRow]);
+    const dashboardIntro = compact([
+      dashboardHeader,
+      dashboardImportPanel,
+      dashboardSearch,
+      dashboardHeadRow,
+    ]);
 
     gsap().set(dashboardIntro, { autoAlpha: 0, y: 10 });
     gsap().set(dashboardRows, {

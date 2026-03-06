@@ -1,6 +1,7 @@
 (() => {
   "use strict";
 
+  // Dashboard list filtering and custom profile select behavior.
   const root = document.querySelector("[data-dashboard-root]");
   if (!root) return;
 
@@ -48,6 +49,8 @@
   }
 
   function initProfileSelect() {
+    // Progressive enhancement: replace native select UX with a custom dropdown,
+    // while keeping the native select as the source of truth for value/state.
     const selectRoot = root.querySelector("[data-dashboard-profile-select]");
     if (!selectRoot) return;
 
@@ -122,6 +125,7 @@
   }
 
   function applyFilters() {
+    // Client-side filtering avoids page reloads and keeps focus in the search input.
     const queryRaw = clean(searchInput ? searchInput.value : "");
     const profileRaw = clean(profileInput ? profileInput.value : "");
     const query = lower(queryRaw);
@@ -152,6 +156,7 @@
   }
 
   function initLiveFiltering() {
+    // Debounced search + profile filter, with IME composition support.
     if (!searchForm || !searchInput || !profileInput) {
       setCount(rows.length);
       return;

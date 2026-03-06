@@ -4,6 +4,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'recipes/css/recipe_dashboard.css' %}" />
 <link rel="stylesheet" href="{% static 'recipes/css/recipe_confirm_delete.css' %}" />
+<link rel="stylesheet" href="{% static 'recipes/css/recipe_transfer.css' %}" />
 {% endblock %}
 {% block content %}
 <section class="container recipe-dashboard" data-dashboard-root>
@@ -22,6 +23,33 @@
       {% endwith %}
     </p>
   </header>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div
+        class="recipe-dashboard__notice{% if 'error' in message.tags %} recipe-dashboard__notice--error{% elif 'warning' in message.tags %} recipe-dashboard__notice--warning{% else %} recipe-dashboard__notice--success{% endif %}"
+        role="status"
+        aria-live="polite"
+      >
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <section class="recipe-dashboard__import-panel" aria-labelledby="dashboard-import-title">
+    <div class="recipe-dashboard__import-copy">
+      <p class="recipe-dashboard__eyebrow">Import / Export</p>
+      <h2 class="recipe-dashboard__import-title" id="dashboard-import-title">
+        Importer des recettes en JSON
+      </h2>
+      <p class="recipe-dashboard__import-text">
+        Ajoutez une ou plusieurs recettes depuis un fichier JSON ou collez directement le contenu dans un schema pre-rempli.
+      </p>
+    </div>
+    <button type="button" class="recipe-dashboard__import-trigger" data-role="open-import-modal">
+      Importer
+    </button>
+  </section>
 
   <form method="get" class="recipe-list__search" role="search" autocomplete="off">
     <input
@@ -128,6 +156,16 @@
           <a class="recipe-dashboard__action recipe-dashboard__action--edit" href="{% url 'recipe_update' recipe.pk %}">
             Modifier
           </a>
+          <button
+            type="button"
+            class="recipe-dashboard__action recipe-dashboard__action--export"
+            data-role="open-export-modal"
+            data-export-json-url="{% url 'recipe_export' recipe.pk 'json' %}"
+            data-export-word-url="{% url 'recipe_export' recipe.pk 'word' %}"
+            data-export-pdf-url="{% url 'recipe_export' recipe.pk 'pdf' %}"
+          >
+            Exporter
+          </button>
           <a class="recipe-dashboard__action recipe-dashboard__action--delete" href="{% url 'recipe_delete' recipe.pk %}">
             Supprimer
           </a>
@@ -194,7 +232,159 @@
       </form>
     </div>
   </div>
+
+  <div class="recipe-transfer-modal" id="recipeImportModal" hidden aria-hidden="true">
+    <button
+      type="button"
+      class="recipe-transfer-modal__backdrop"
+      data-role="import-backdrop"
+      aria-label="Fermer l'import de recettes"
+    ></button>
+    <div
+      class="recipe-transfer-modal__panel recipe-transfer-modal__panel--wide"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="recipeImportModalTitle"
+    >
+      <div class="recipe-transfer-modal__scroller">
+      <div class="recipe-transfer-modal__head">
+        <div>
+          <p class="recipe-transfer-modal__eyebrow">Import JSON</p>
+          <h2 class="recipe-transfer-modal__title" id="recipeImportModalTitle">
+            Importer des recettes
+          </h2>
+        </div>
+        <a class="recipe-transfer-modal__download" href="{% url 'recipe_import_schema' %}">
+          Telecharger le schema
+        </a>
+      </div>
+
+      <p class="recipe-transfer-modal__text">
+        Le textarea est deja pre-rempli avec le schema attendu. Vous pouvez aussi choisir un fichier JSON: son contenu sera charge dans la zone de texte.
+      </p>
+
+      <div class="recipe-transfer-modal__layout">
+        <form
+          method="post"
+          action="{% url 'recipe_import' %}"
+          enctype="multipart/form-data"
+          data-role="import-form"
+          class="recipe-transfer-form"
+        >
+          {% csrf_token %}
+
+          <div class="recipe-transfer-form__field">
+            <label class="recipe-transfer-form__label" for="recipeImportFile">Fichier JSON</label>
+            <input
+              id="recipeImportFile"
+              class="recipe-transfer-form__file"
+              type="file"
+              name="import_file"
+              accept=".json,application/json"
+              data-role="import-file"
+            />
+          </div>
+
+          <div class="recipe-transfer-form__field">
+            <label class="recipe-transfer-form__label" for="recipeImportTextarea">Contenu JSON</label>
+            <div class="recipe-transfer-form__textarea-shell">
+              <textarea
+                id="recipeImportTextarea"
+                class="recipe-transfer-form__textarea"
+                name="json_payload"
+                rows="18"
+                data-role="import-textarea"
+              >{{ import_schema_pretty }}</textarea>
+            </div>
+          </div>
+
+          <p class="recipe-transfer-form__hint">
+            Racine attendue: une cle <code>recipes</code> contenant une liste de recettes.
+          </p>
+
+          <p class="recipe-transfer-form__feedback" data-role="import-feedback" hidden></p>
+
+          <div class="recipe-transfer-modal__actions">
+            <button type="button" class="recipe-transfer-modal__cancel" data-role="import-cancel">
+              Annuler
+            </button>
+            <button type="submit" class="recipe-transfer-modal__confirm" data-role="import-submit">
+              Importer les recettes
+            </button>
+          </div>
+        </form>
+
+        <aside class="recipe-transfer-preview" aria-live="polite">
+          <h3 class="recipe-transfer-preview__title">Apercu avant import</h3>
+          <p class="recipe-transfer-preview__text">
+            Le recapitulatif se met a jour des que le JSON est charge ou modifie.
+          </p>
+          <div class="recipe-transfer-preview__list" data-role="import-preview"></div>
+        </aside>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="recipe-transfer-modal" id="recipeExportModal" hidden aria-hidden="true">
+    <button
+      type="button"
+      class="recipe-transfer-modal__backdrop"
+      data-role="export-backdrop"
+      aria-label="Fermer l'export de recette"
+    ></button>
+    <div
+      class="recipe-transfer-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="recipeExportModalTitle"
+    >
+      <div class="recipe-transfer-modal__scroller">
+      <p class="recipe-transfer-modal__eyebrow">Export</p>
+      <h2 class="recipe-transfer-modal__title" id="recipeExportModalTitle">
+        Exporter la recette
+      </h2>
+      <p class="recipe-transfer-modal__text">
+        Choisissez un format de sortie pour cette recette.
+      </p>
+
+      <ul class="recipe-transfer-summary">
+        <li>
+          <span class="recipe-transfer-summary__label">Recette</span>
+          <span data-role="export-title"></span>
+        </li>
+        <li>
+          <span class="recipe-transfer-summary__label">Profil</span>
+          <span data-role="export-profile"></span>
+        </li>
+        <li>
+          <span class="recipe-transfer-summary__label">Description</span>
+          <span data-role="export-description"></span>
+        </li>
+      </ul>
+
+      <div class="recipe-transfer-export__actions">
+        <a class="recipe-transfer-export__link recipe-transfer-export__link--json" data-role="export-json" href="#">
+          JSON
+        </a>
+        <a class="recipe-transfer-export__link recipe-transfer-export__link--word" data-role="export-word" href="#">
+          Word
+        </a>
+        <a class="recipe-transfer-export__link recipe-transfer-export__link--pdf" data-role="export-pdf" href="#">
+          PDF
+        </a>
+      </div>
+
+      <div class="recipe-transfer-modal__actions">
+        <button type="button" class="recipe-transfer-modal__cancel" data-role="export-cancel">
+          Fermer
+        </button>
+      </div>
+      </div>
+    </div>
+  </div>
 </section>
 <script src="{% static 'recipes/js/recipe_dashboard.js' %}"></script>
 <script src="{% static 'recipes/js/recipe_confirm_delete.js' %}"></script>
+<script src="{% static 'recipes/js/recipe_transfer.js' %}"></script>
 {% endblock %}
