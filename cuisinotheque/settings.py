@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Autoriser les hosts (par défaut on accepte tout, à restreindre en prod)
-ALLOWED_HOSTS = [h.strip() for h in config('ALLOWED_HOSTS', default='*').split(',') if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in str(config('ALLOWED_HOSTS', default='*', cast=str)).split(',') if h.strip()]
 
 # Application definition
 INSTALLED_APPS = [
