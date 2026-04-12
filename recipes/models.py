@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.core.validators import MinValueValidator
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 
 class Recipe(models.Model):
@@ -16,6 +16,9 @@ class Recipe(models.Model):
     rest_time = models.CharField(max_length=60, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    if TYPE_CHECKING:
+        sections: Any
 
     class Meta:
         ordering = ["-created_at"]
@@ -38,8 +41,8 @@ class RecipeSection(models.Model):
     order = models.PositiveIntegerField(default=1)
 
     if TYPE_CHECKING:
-        ingredients: models.Manager["IngredientItem"]
-        steps: models.Manager["Step"]
+        ingredients: Any
+        steps: Any
 
     class Meta:
         ordering = ["order", "id"]
