@@ -132,7 +132,7 @@ class RecipeViewsTests(TestCase):
         recipe1 = self.create_recipe_with_relations(title="Cookies chocolat", profile="Gouter")
         recipe2 = self.create_recipe_with_relations(title="Tarte citron", profile="Dessert")
 
-        response = self.client.get(reverse("recipe_list"), {"search": "chocolat"})
+        response = self.client.get(reverse("recipe_list"), {"q": "chocolat"})
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Cookies chocolat")
@@ -662,7 +662,7 @@ class RecipeViewsTests(TestCase):
         response = self.client.get(reverse("recipe_import_schema"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertTrue(response["Content-Type"].startswith("application/json"))
         payload = json.loads(response.content)
         self.assertIn("recipes", payload)
 

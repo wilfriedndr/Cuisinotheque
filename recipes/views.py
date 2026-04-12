@@ -861,22 +861,23 @@ def recipe_import(request):
         return JsonResponse({"ok": False, "error": str(exc)}, status=400)
 
     imported_total = 0
-    try:
-        with transaction.atomic():
-            for idx, recipe_payload in enumerate(recipe_items, start=1):
-                if not isinstance(recipe_payload, dict):
-                    raise ValueError(f"Recette {idx}: format invalide.")
-                try:
-                    _save_recipe_from_payload(None, recipe_payload)
-                except ValueError as exc:
-                    raise ValueError(f"Recette {idx}: {exc}") from exc
-                imported_total += 1
-    except ValueError as exc:
-        return JsonResponse({"ok": False, "error": str(exc)}, status=400)
+    errors = []
+    with transaction.atomic():
+        for idx, recipe_payload in enumerate(recipe_items, start=1):
+            if not isinstance(recipe_payload, dict):
+                errors.append(f"Recette {idx}: format invalide.")
+                continue
+            try:
+                _save_recipe_from_payload(None, recipe_payload)
+            except ValueError as exc:
+                errors.append(f"Recette {idx}: {exc}")
+                continue
+            imported_total += 1
 
     if imported_total == 0:
+        error_message = errors[0] if errors else "Aucune recette valide a importer."
         return JsonResponse(
-            {"ok": False, "error": "Aucune recette valide a importer."},
+            {"ok": False, "error": error_message},
             status=400,
         )
 
