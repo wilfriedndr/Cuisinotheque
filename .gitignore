@@ -10,6 +10,7 @@ __pycache__/
 
 # Config & secrets
 .env
+/env/
 
 # Base de données locale
 *.sqlite3

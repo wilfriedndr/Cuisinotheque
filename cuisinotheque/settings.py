@@ -1,14 +1,37 @@
-from pathlib import Path
-from decouple import config
 import os
+import sys
+from pathlib import Path
+
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+RUNNING_TESTS = "test" in sys.argv
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+
+def config_bool(name, default=False):
+    """Read a boolean setting while tolerating unexpected environment values."""
+    value = config(name, default=default)
+    if isinstance(value, bool):
+        return value
+
+    normalized = str(value).strip().lower()
+    if normalized in {"1", "true", "t", "yes", "y", "on"}:
+        return True
+    if normalized in {"0", "false", "f", "no", "n", "off", ""}:
+        return False
+    return default
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = (
+    config('SECRET_KEY', default='test-secret-key')
+    if RUNNING_TESTS
+    else config('SECRET_KEY')
+)
+
+DEBUG = config_bool('DEBUG', default=False)
 
 # Autoriser les hosts (par défaut on accepte tout, à restreindre en prod)
 ALLOWED_HOSTS = [h.strip() for h in str(config('ALLOWED_HOSTS', default='*', cast=str)).split(',') if h.strip()]
@@ -56,16 +79,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cuisinotheque.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('POSTGRES_DB'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': config('POSTGRES_HOST'),
-        'PORT': config('POSTGRES_PORT', cast=int),
+if RUNNING_TESTS:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('POSTGRES_DB'),
+            'USER': config('POSTGRES_USER'),
+            'PASSWORD': config('POSTGRES_PASSWORD'),
+            'HOST': config('POSTGRES_HOST'),
+            'PORT': config('POSTGRES_PORT', cast=int),
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
