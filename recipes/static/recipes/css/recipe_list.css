@@ -30,6 +30,8 @@
 
 /* Recherche + filtre profil */
 .recipe-list__search {
+  position: relative;
+  z-index: 45;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(210px, 280px) auto;
   gap: 10px;
@@ -38,6 +40,8 @@
 }
 
 .recipe-list__filter-wrap {
+  position: relative;
+  z-index: 2;
   display: grid;
   gap: 6px;
 }
@@ -243,6 +247,8 @@
 }
 
 .recipe-grid {
+  position: relative;
+  z-index: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 16px;
