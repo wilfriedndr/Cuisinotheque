@@ -110,7 +110,11 @@
 
   const gap = 12;
   const viewportMargin = 12;
-  const hoverOpenDelayMs = 1000;
+  const hoverOpenDelayMs = 650;
+  const pointerFocusSuppressMs = 700;
+  const canUseHoverPreview =
+    !window.matchMedia ||
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   let activeCard = null;
   let pendingCard = null;
@@ -119,6 +123,7 @@
   let positionRaf = null;
   let isVisible = false;
   let transitionNonce = 0;
+  let lastCardPointerDownAt = 0;
 
   function clean(value) {
     return String(value || "").trim();
@@ -444,6 +449,7 @@
   }
 
   function syncHoverStateAfterFocus() {
+    if (!canUseHoverPreview) return;
     // Corrige le cas retour focus navigateur: si une carte est déjà hover, on affiche la pancarte
     const hoveredCard = getHoveredCard();
     if (!hoveredCard) return;
@@ -453,6 +459,7 @@
   }
 
   function scheduleShowFromTarget(target) {
+    if (!canUseHoverPreview) return;
     // Fallback de détection hover via délégation d'événement
     if (!target || typeof target.closest !== "function") return;
     const hoveredCard = target.closest(".recipe-card");
@@ -567,7 +574,13 @@
   initLiveFiltering();
 
   cards.forEach((card) => {
+    card.addEventListener("pointerdown", () => {
+      lastCardPointerDownAt = Date.now();
+      clearShowTimer();
+    });
+
     card.addEventListener("mouseenter", () => {
+      if (!canUseHoverPreview) return;
       scheduleShow(card);
     });
 
@@ -580,7 +593,8 @@
 
     card.addEventListener("focusin", () => {
       clearShowTimer();
-      showPopup(card);
+      if (Date.now() - lastCardPointerDownAt < pointerFocusSuppressMs) return;
+      scheduleShow(card);
     });
 
     card.addEventListener("focusout", (event) => {
@@ -602,6 +616,7 @@
   });
 
   listRoot.addEventListener("mousemove", (event) => {
+    if (!canUseHoverPreview) return;
     scheduleShowFromTarget(event.target);
   });
 
